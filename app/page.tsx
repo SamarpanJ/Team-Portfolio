@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Suspense } from "react"
 import Footer from "@/components/footer"
 import { InteractiveGlobe } from "@/components/hero"
+import { TestimonialsSection } from "@/components/testimonials"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -168,15 +169,19 @@ export default function HomePage() {
               {stats.map((stat, index) => (
                 <motion.div
                   key={index}
-                  className="glass-card p-3 sm:p-6 rounded-lg text-center group w-full"
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  transition={{ duration: 0.3 }}
+                  className="dev-stat-card p-3 sm:p-6 text-center group w-full relative"
+                  whileHover={{ scale: 1.05, y: -8 }}
+                  transition={{ duration: 0.4 }}
                 >
-                  <div className="flex justify-center mb-2 sm:mb-3 text-blue-400 group-hover:text-blue-300 transition-colors">
-                    {stat.icon}
+                  <div className="binary-bg"></div>
+                  <div className="relative z-10">
+                    <div className="flex justify-center mb-2 sm:mb-3 text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                      {stat.icon}
+                    </div>
+                    <div className="text-xl sm:text-2xl font-bold text-white mb-1 font-mono">{stat.value}</div>
+                    <div className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">{stat.label}</div>
+  
                   </div>
-                  <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stat.value}</div>
-                  <div className="text-xs sm:text-sm text-gray-400">{stat.label}</div>
                 </motion.div>
               ))}
             </motion.div>
@@ -232,19 +237,26 @@ export default function HomePage() {
             {services.map((service, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-4 sm:p-8 rounded-xl group hover:bg-gray-800/60 transition-all duration-300 w-full"
+                className="dev-service-card p-4 sm:p-8 group transition-all duration-300 w-full relative"
                 variants={fadeInUp}
-                whileHover={{ y: -10, scale: 1.02 }}
+                whileHover={{ y: -12, scale: 1.02 }}
               >
-                <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${service.color} mb-4 sm:mb-6 w-fit group-hover:scale-110 transition-transform duration-300`}>
-                  <div className="text-white">{service.icon}</div>
+                <div className="particle-overlay"></div>
+                <div className="grid-overlay"></div>
+                <div className="relative z-10">
+                  <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${service.color} mb-4 sm:mb-6 w-fit group-hover:scale-110 transition-transform duration-300`}>
+                    <div className="text-white">{service.icon}</div>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4 group-hover:text-purple-300 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors text-sm sm:text-base">
+                    {service.description}
+                  </p>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
+                  </div>
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4 group-hover:text-blue-300 transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors text-sm sm:text-base">
-                  {service.description}
-                </p>
               </motion.div>
             ))}
           </motion.div>
@@ -252,28 +264,30 @@ export default function HomePage() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-gray-900/20 to-transparent overflow-hidden">
+      <section className="py-32 px-4 border-t border-gray-800/50 overflow-hidden">
         <div className="max-w-7xl mx-auto w-full">
           <motion.div className="text-center mb-20" {...fadeInUp}>
             <motion.div 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-8"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <CheckCircle className="w-3 h-3 text-green-400" />
-              <span className="text-xs text-green-300 font-medium uppercase tracking-wider">Why Choose Us</span>
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400"></div>
+              <span className="text-sm text-gray-300 font-medium">Why Choose Us</span>
             </motion.div>
             
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 sm:mb-8 gradient-text px-2 sm:px-0">Built for Excellence</h2>
-            <p className="text-lg sm:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight mb-6 sm:mb-8 gradient-text px-2 sm:px-0 tracking-tight">
+              Built for Excellence
+            </h2>
+            <p className="text-xl sm:text-2xl text-gray-400 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0 font-light">
               Discover what makes us the right choice for your next software development project
             </p>
           </motion.div>
 
           <motion.div
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 w-full"
+            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full"
             variants={staggerContainer}
             initial="initial"
             whileInView="animate"
@@ -282,28 +296,52 @@ export default function HomePage() {
             {whyChooseUs.map((reason, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-4 sm:p-8 rounded-xl group hover:bg-gray-800/60 transition-all duration-300 w-full"
+                className="group relative"
                 variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={{ y: -12 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
               >
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="p-2 sm:p-3 rounded-lg bg-green-500/20 text-green-400 group-hover:bg-green-500/30 group-hover:scale-110 transition-all duration-300 flex-shrink-0">
-                    {reason.icon}
+                {/* Background gradient that appears on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                
+                {/* Main card */}
+                <div className="relative h-full bg-white/[0.02] backdrop-blur-sm border border-white/[0.05] rounded-2xl p-8 group-hover:border-white/[0.1] transition-all duration-500">
+                  {/* Full border gradient accents */}
+                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-t-2xl"></div>
+                  <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-b-2xl"></div>
+                  <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent rounded-l-2xl"></div>
+                  <div className="absolute right-0 top-0 w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent rounded-r-2xl"></div>
+                  
+                  {/* Icon container */}
+                  <div className="mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 flex items-center justify-center group-hover:from-blue-900/30 group-hover:to-purple-900/30 group-hover:border-blue-500/30 transition-all duration-500">
+                      <div className="text-gray-400 group-hover:text-blue-400 transition-colors duration-500">
+                        {reason.icon}
+                      </div>
+                    </div>
                   </div>
+                  
+                  {/* Content */}
                   <div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-2 sm:mb-3 group-hover:text-green-300 transition-colors">
+                    <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-blue-100 transition-colors duration-300">
                       {reason.title}
                     </h3>
-                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors text-sm sm:text-base">
+                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300 text-base">
                       {reason.description}
                     </p>
                   </div>
+                  
+                  {/* Bottom accent line */}
+                  <div className="absolute bottom-0 left-0 w-0 h-px bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-700 ease-out"></div>
                 </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
 
       {/* Call to Action Section */}
       <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-transparent to-black/50 overflow-hidden">

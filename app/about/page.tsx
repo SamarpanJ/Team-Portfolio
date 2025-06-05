@@ -223,47 +223,52 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Culture & Values Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-transparent to-gray-900/20">
-        <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-20" {...fadeInUp}>
+      {/* Team Culture & Values Section - Apple-inspired clean design */}
+      <section className="py-24 px-4 border-t border-gray-800/50 bg-gradient-to-b from-white/[0.01] to-white/[0.02]">
+        <div className="max-w-6xl mx-auto">
+          <motion.div className="text-center mb-16" {...fadeInUp}>
             <motion.div 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] mb-8 shadow-2xl"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <HeartHandshake className="w-3 h-3 text-blue-400" />
-              <span className="text-xs text-blue-300 font-medium uppercase tracking-wider">Team Culture</span>
+              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
+              <span className="text-sm text-white font-medium tracking-wide">Team Culture</span>
             </motion.div>
             
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 sm:mb-8 gradient-text px-2 sm:px-0">How We Work</h2>
-            <p className="text-lg sm:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
+            <h2 className="text-5xl md:text-6xl font-extralight mb-6 text-white tracking-tight">How We Work</h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed font-light">
               Our team combines technical excellence with collaborative innovation to deliver exceptional results
             </p>
           </motion.div>
 
-          <div className="space-y-6 sm:space-y-12 max-w-5xl mx-auto">
+          <div className="space-y-4 max-w-4xl mx-auto">
             {teamValues.map((value, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-4 sm:p-8 rounded-xl group"
-                initial={{ opacity: 0, y: 30 }}
+                className="group"
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ scale: 1.02, y: -2 }}
+                whileHover={{ y: -2 }}
               >
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400 flex-shrink-0 mt-1 sm:mt-2 group-hover:text-blue-300 transition-colors" />
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-3 group-hover:text-blue-300 transition-colors">
-                      {value.title}
-                    </h3>
-                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors text-base sm:text-lg">
-                      {value.description}
-                    </p>
+                <div className="relative p-8 rounded-3xl bg-white/[0.02] backdrop-blur-xl border border-white/[0.05] group-hover:bg-white/[0.04] group-hover:border-white/[0.1] transition-all duration-500 shadow-xl group-hover:shadow-2xl">
+                  <div className="flex items-start gap-6">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/15 transition-all duration-300">
+                      <CheckCircle className="w-6 h-6 text-emerald-400" />
+                    </div>
+                    
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-white mb-3 tracking-tight">
+                        {value.title}
+                      </h3>
+                      <p className="text-gray-400 leading-relaxed font-light">
+                        {value.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -272,70 +277,90 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Global Communication Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-gray-900/20 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-20" {...fadeInUp}>
+      {/* Global Communication Section - Stripe-inspired gradient design */}
+      <section className="py-24 px-4 border-t border-gray-800/50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5"></div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
+          <motion.div className="text-center mb-16" {...fadeInUp}>
             <motion.div 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-xl border border-cyan-500/20 mb-8"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <MessageSquare className="w-3 h-3 text-cyan-400" />
-              <span className="text-xs text-cyan-300 font-medium uppercase tracking-wider">Global Communication</span>
+              <MessageSquare className="w-4 h-4 text-cyan-400" />
+              <span className="text-sm text-cyan-100 font-medium tracking-wider">Global Communication</span>
             </motion.div>
             
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 sm:mb-8 gradient-text px-2 sm:px-0">Languages We Speak</h2>
-            <p className="text-lg sm:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
+            <h2 className="text-5xl md:text-6xl font-extralight mb-6 bg-gradient-to-r from-cyan-200 to-blue-200 bg-clip-text text-transparent tracking-tight">Languages We Speak</h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed font-light">
               Our multilingual capabilities enable seamless collaboration with clients from different regions and cultures
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 max-w-4xl mx-auto">
             {languages.map((language, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-4 sm:p-6 rounded-xl text-center group"
-                initial={{ opacity: 0, y: 30 }}
+                className="group"
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ scale: 1.05, y: -5 }}
+                whileHover={{ y: -8, scale: 1.05 }}
               >
-                <div className="text-3xl sm:text-4xl mb-2 sm:mb-3">{language.flag}</div>
-                <h3 className="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2 group-hover:text-cyan-300 transition-colors">{language.name}</h3>
-                <p className="text-xs sm:text-sm text-gray-400 group-hover:text-gray-300 transition-colors">{language.proficiency}</p>
+                <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-xl border border-white/[0.1] text-center group-hover:border-cyan-400/40 transition-all duration-500 shadow-lg group-hover:shadow-xl">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-blue-500/0 group-hover:from-cyan-500/5 group-hover:to-blue-500/5 transition-all duration-500"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="text-4xl mb-4 filter drop-shadow-lg">
+                      {language.flag}
+                    </div>
+                    
+                    <h3 className="text-sm font-semibold text-white mb-3 tracking-wide">
+                      {language.name}
+                    </h3>
+                    
+                    <div className="px-3 py-1.5 text-xs bg-white/[0.05] text-cyan-200 rounded-lg border border-white/[0.1] font-medium">
+                      {language.proficiency}
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Current Focus Areas Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-transparent to-gray-900/20">
-        <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-20" {...fadeInUp}>
+      {/* Current Focus Areas Section - Tesla-inspired sleek design */}
+      <section className="py-24 px-4 border-t border-gray-800/50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-pink-900/10"></div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
+          <motion.div className="text-center mb-16" {...fadeInUp}>
             <motion.div 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-black/40 backdrop-blur-2xl border border-purple-500/30 mb-8 shadow-2xl"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Target className="w-3 h-3 text-purple-400" />
-              <span className="text-xs text-purple-300 font-medium uppercase tracking-wider">Current Focus</span>
+              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 shadow-lg shadow-purple-400/50"></div>
+              <span className="text-sm text-purple-100 font-medium tracking-wider uppercase">Areas of Expertise</span>
             </motion.div>
             
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 sm:mb-8 gradient-text px-2 sm:px-0">Areas of Expertise</h2>
-            <p className="text-lg sm:text-xl text-gray-400 leading-relaxed px-4 sm:px-0">
+            <h2 className="text-5xl md:text-6xl font-light mb-6 bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200 bg-clip-text text-transparent tracking-tight">
+              Next-Generation Solutions
+            </h2>
+            <p className="text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto font-light">
               We are actively building next-generation systems centered around these key technological domains
             </p>
           </motion.div>
 
           <motion.div
-            className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto"
+            className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto"
             variants={staggerContainer}
             initial="initial"
             whileInView="animate"
@@ -344,26 +369,37 @@ export default function AboutPage() {
             {focusAreas.map((area, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-4 sm:p-8 rounded-xl group hover:bg-gray-800/60 transition-all duration-300 relative overflow-hidden"
+                className="group"
                 variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={{ y: -12, scale: 1.02 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
               >
-                <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 relative z-10">
-                  <div className="p-3 sm:p-4 rounded-lg bg-purple-500/20 text-purple-400 group-hover:bg-purple-500/30 group-hover:scale-110 transition-all duration-300">
-                    {area.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4 group-hover:text-purple-300 transition-colors">
-                      {area.title}
-                    </h3>
-                    <p className="text-gray-400 leading-relaxed mb-3 sm:mb-4 group-hover:text-gray-300 transition-colors text-sm sm:text-base">
-                      {area.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
+                <div className="relative h-full bg-gradient-to-br from-black/60 to-gray-900/60 backdrop-blur-2xl border border-purple-500/20 rounded-3xl p-8 group-hover:border-purple-400/40 transition-all duration-500 shadow-2xl group-hover:shadow-purple-500/10">
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/5 group-hover:to-pink-500/5 transition-all duration-700"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-start gap-6 mb-6">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600/30 to-pink-600/30 border border-purple-400/30 flex items-center justify-center shadow-lg">
+                        <div className="text-purple-300 group-hover:text-purple-200 transition-colors duration-300">
+                          {area.icon}
+                        </div>
+                      </div>
+                      
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-semibold text-white mb-4 tracking-tight">
+                          {area.title}
+                        </h3>
+                        <p className="text-gray-300 leading-relaxed font-light">
+                          {area.description}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-3 pt-6 border-t border-purple-500/20">
                       {area.highlights.map((highlight, highlightIndex) => (
                         <span
                           key={highlightIndex}
-                          className="px-2 py-1 sm:px-3 bg-gray-800/50 text-gray-300 rounded-full text-xs sm:text-sm border border-gray-700/30 group-hover:border-purple-500/30 transition-colors"
+                          className="px-4 py-2 bg-purple-600/20 border border-purple-500/30 rounded-xl text-xs font-medium text-purple-200 backdrop-blur-sm"
                         >
                           {highlight}
                         </span>
@@ -371,32 +407,33 @@ export default function AboutPage() {
                     </div>
                   </div>
                 </div>
-                
-                {/* Subtle hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Core Values Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-gray-900/20 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-20" {...fadeInUp}>
+      {/* Core Values Section - Google Material Design inspired */}
+      <section className="py-24 px-4 border-t border-gray-800/50 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5"></div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
+          <motion.div className="text-center mb-16" {...fadeInUp}>
             <motion.div 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 mb-6"
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-green-500/10 backdrop-blur-xl border border-green-500/20 mb-8 shadow-lg"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <HeartHandshake className="w-3 h-3 text-green-400" />
-              <span className="text-xs text-green-300 font-medium uppercase tracking-wider">Core Values</span>
+              <div className="w-2 h-2 rounded-full bg-green-400 shadow-lg shadow-green-400/50"></div>
+              <span className="text-sm text-green-100 font-medium tracking-wide">Core Values</span>
             </motion.div>
             
-            <h2 className="text-5xl md:text-6xl font-light mb-8 gradient-text">What Drives Us</h2>
-            <p className="text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed">
+            <h2 className="text-5xl md:text-6xl font-extralight mb-6 bg-gradient-to-r from-green-200 to-emerald-200 bg-clip-text text-transparent tracking-tight">
+              What Drives Us
+            </h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed font-light">
               Our fundamental principles that shape every decision we make and every solution we create
             </p>
           </motion.div>
@@ -411,21 +448,36 @@ export default function AboutPage() {
             {coreValues.map((value, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-8 rounded-xl group hover:bg-gray-800/60 transition-all duration-300"
+                className="group"
                 variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-green-500/20 text-green-400 group-hover:bg-green-500/30 group-hover:scale-110 transition-all duration-300">
-                    {value.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-green-300 transition-colors">
-                      {value.title}
-                    </h3>
-                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
-                      {value.description}
-                    </p>
+                <div 
+                  className="relative h-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 group-hover:bg-white/[0.05] group-hover:border-green-400/30 transition-all duration-500 shadow-xl group-hover:shadow-2xl"
+                  style={{
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)'
+                  }}
+                >
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-green-500/0 to-emerald-500/0 group-hover:from-green-500/5 group-hover:to-emerald-500/5 transition-all duration-500"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="mb-8">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 flex items-center justify-center shadow-lg">
+                        <div className="text-green-400 group-hover:text-green-300 transition-colors duration-300">
+                          {value.icon}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-4 tracking-tight">
+                        {value.title}
+                      </h3>
+                      <p className="text-gray-400 leading-relaxed font-light text-sm">
+                        {value.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -434,23 +486,25 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-transparent to-gray-900/20">
-        <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-20" {...fadeInUp}>
+      {/* Why Choose Us Section - Linear-inspired minimal design */}
+      <section className="py-24 px-4 border-t border-gray-800/50">
+        <div className="max-w-6xl mx-auto">
+          <motion.div className="text-center mb-16" {...fadeInUp}>
             <motion.div 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 mb-6"
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-orange-500/5 backdrop-blur-xl border border-orange-500/20 mb-8"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Award className="w-3 h-3 text-orange-400" />
-              <span className="text-xs text-orange-300 font-medium uppercase tracking-wider">Why Choose Us</span>
+              <div className="w-1 h-4 bg-gradient-to-b from-orange-400 to-red-400 rounded-full"></div>
+              <span className="text-sm text-orange-100 font-medium tracking-wide">Why Choose Us</span>
             </motion.div>
             
-            <h2 className="text-5xl md:text-6xl font-light mb-8 gradient-text">The Smart Choice</h2>
-            <p className="text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed">
+            <h2 className="text-5xl md:text-6xl font-extralight mb-6 bg-gradient-to-r from-orange-200 to-red-200 bg-clip-text text-transparent tracking-tight">
+              The Smart Choice
+            </h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed font-light">
               Here's why forward-thinking companies choose us as their technology partner
             </p>
           </motion.div>
@@ -465,26 +519,35 @@ export default function AboutPage() {
             {whyChooseUs.map((reason, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-8 rounded-xl group hover:bg-gray-800/60 transition-all duration-300 relative overflow-hidden"
+                className="group"
                 variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={{ y: -6 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                <div className="flex items-start gap-4 relative z-10">
-                  <div className="p-3 rounded-lg bg-orange-500/20 text-orange-400 group-hover:bg-orange-500/30 group-hover:scale-110 transition-all duration-300">
-                    {reason.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-orange-300 transition-colors">
-                      {reason.title}
-                    </h3>
-                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
-                      {reason.description}
-                    </p>
+                <div className="relative h-full p-8 rounded-3xl bg-gradient-to-br from-white/[0.02] to-white/[0.01] backdrop-blur-xl border border-white/[0.05] group-hover:bg-white/[0.04] group-hover:border-orange-400/30 transition-all duration-500">
+                  <div className="flex flex-col h-full">
+                    <div className="mb-6">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/15 to-red-500/15 border border-orange-500/25 flex items-center justify-center">
+                        <div className="text-orange-400 group-hover:text-orange-300 transition-colors duration-300">
+                          {reason.icon}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white mb-4 tracking-tight">
+                        {reason.title}
+                      </h3>
+                      <p className="text-gray-400 leading-relaxed font-light text-sm">
+                        {reason.description}
+                      </p>
+                    </div>
+                    
+                    <div className="mt-6 pt-4 border-t border-white/[0.05] group-hover:border-orange-400/20 transition-colors duration-300">
+                      <div className="w-8 h-0.5 bg-gradient-to-r from-orange-400 to-red-400 rounded-full"></div>
+                    </div>
                   </div>
                 </div>
-                
-                {/* Subtle hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
             ))}
           </motion.div>

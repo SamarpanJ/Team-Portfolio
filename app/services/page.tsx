@@ -321,49 +321,53 @@ export default function ServicesPage() {
             {coreServices.map((service, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-4 sm:p-8 rounded-xl group hover:bg-gray-800/60 transition-all duration-300"
+                className="dev-service-card p-4 sm:p-8 group transition-all duration-300 relative"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={{ y: -10, scale: 1.02 }}
               >
-                <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${service.color} group-hover:scale-110 transition-transform duration-300`}>
-                    <div className="text-white">{service.icon}</div>
+                <div className="particle-overlay"></div>
+                <div className="grid-overlay"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${service.color} group-hover:scale-110 transition-transform duration-300`}>
+                      <div className="text-white">{service.icon}</div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-3 group-hover:text-purple-300 transition-colors">
+                        {service.title}
+                      </h3>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-3 group-hover:text-blue-300 transition-colors">
-                      {service.title}
-                    </h3>
-                  </div>
-                </div>
-                
-                <p className="text-gray-400 leading-relaxed mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors text-sm sm:text-base">
-                  {service.description}
-                </p>
+                  
+                  <p className="text-gray-400 leading-relaxed mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors text-sm sm:text-base">
+                    {service.description}
+                  </p>
 
-                <div className="mb-4 sm:mb-6">
-                  <h4 className="text-xs sm:text-sm font-medium text-white mb-2 sm:mb-3 uppercase tracking-wider">Key Features:</h4>
-                  <div className="space-y-1 sm:space-y-2">
-                    {service.features.slice(0, 3).map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center gap-2">
-                        <CheckCircle2 className="w-3 h-3 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-400 text-xs sm:text-sm">{feature}</span>
-                      </div>
+                  <div className="mb-4 sm:mb-6">
+                    <h4 className="text-xs sm:text-sm font-medium text-white mb-2 sm:mb-3 uppercase tracking-wider font-mono">Key Features:</h4>
+                    <div className="space-y-1 sm:space-y-2">
+                      {service.features.slice(0, 3).map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-center gap-2">
+                          <CheckCircle2 className="w-3 h-3 text-green-400 flex-shrink-0" />
+                          <span className="text-gray-400 text-xs sm:text-sm">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1">
+                    {service.deliverables.map((deliverable, delIndex) => (
+                      <span
+                        key={delIndex}
+                        className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded text-xs border border-gray-700/30 font-mono group-hover:border-purple-500/30 transition-colors"
+                      >
+                        {deliverable}
+                      </span>
                     ))}
                   </div>
-                </div>
-
-                <div className="flex flex-wrap gap-1">
-                  {service.deliverables.map((deliverable, delIndex) => (
-                    <span
-                      key={delIndex}
-                      className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded text-xs border border-gray-700/30"
-                    >
-                      {deliverable}
-                    </span>
-                  ))}
                 </div>
               </motion.div>
             ))}
@@ -393,116 +397,298 @@ export default function ServicesPage() {
           </motion.div>
 
           <motion.div
-            className="grid md:grid-cols-3 gap-8"
+            className="grid md:grid-cols-3 gap-8 items-stretch pt-12"
             variants={staggerContainer}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
           >
             {servicePackages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                className="glass-card-intense p-8 rounded-xl group hover:bg-gray-800/60 transition-all duration-300 relative overflow-hidden"
-                variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
-              >
-                <div className="relative z-10">
+              <div key={index} className="relative flex flex-col h-full">
+                {/* Tier indicator - positioned outside the card */}
+                {index === 1 && (
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-50">
+                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-xl border-2 border-purple-400/30 whitespace-nowrap">
+                      ⭐ Most Popular
+                    </div>
+                  </div>
+                )}
+                
+                <motion.div
+                  className={`package-tier-${index + 1} group transition-all duration-500 relative overflow-hidden flex flex-col flex-grow ${index === 1 ? 'scale-105 lg:scale-110 shadow-2xl shadow-purple-500/20' : ''}`}
+                  variants={fadeInUp}
+                  whileHover={{ y: index === 0 ? -8 : index === 1 ? -15 : -12, scale: index === 0 ? 1.02 : index === 1 ? 1.05 : 1.03 }}
+                  style={{ zIndex: index === 1 ? 10 : 1 }}
+                >
+
+                {/* Progressive visual effects */}
+                <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-br from-green-900/20 to-emerald-900/10' : index === 1 ? 'bg-gradient-to-br from-purple-900/30 to-violet-900/20' : 'bg-gradient-to-br from-blue-900/25 to-cyan-900/15'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                
+                {/* Enhanced particle effect for higher tiers */}
+                {index >= 1 && <div className="premium-particle-overlay"></div>}
+                {index === 2 && <div className="enterprise-glow"></div>}
+
+                <div className="relative z-10 p-8 flex flex-col h-full">
+                  {/* Package header with tier styling */}
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-semibold text-white mb-2 group-hover:text-blue-300 transition-colors">
+                    {/* Package tier icon */}
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${index === 0 ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30' : index === 1 ? 'bg-gradient-to-br from-purple-500/20 to-violet-500/20 border border-purple-500/30' : 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30'}`}>
+                      <div className={`text-2xl ${index === 0 ? 'text-green-400' : index === 1 ? 'text-purple-400' : 'text-blue-400'}`}>
+                        {index === 0 ? '🚀' : index === 1 ? '⭐' : '👑'}
+                      </div>
+                    </div>
+
+                    <h3 className={`text-2xl font-bold text-white mb-2 ${index === 0 ? 'group-hover:text-green-300' : index === 1 ? 'group-hover:text-purple-300' : 'group-hover:text-blue-300'} transition-colors font-mono`}>
                       {pkg.name}
                     </h3>
-                    <p className="text-gray-400 mb-4 group-hover:text-gray-300 transition-colors">
+                    
+                    <p className="text-gray-400 mb-6 group-hover:text-gray-300 transition-colors leading-relaxed min-h-[3rem]">
                       {pkg.description}
                     </p>
-                    <div className="text-3xl font-bold text-blue-400 mb-2">{pkg.price}</div>
-                    <div className="text-sm text-gray-500">Ideal for: {pkg.ideal}</div>
+                    
+                    {/* Enhanced price display with tier differentiation */}
+                    <div className="mb-6">
+                      <div className={`text-4xl font-bold mb-2 font-mono ${index === 0 ? 'text-green-400' : index === 1 ? 'text-purple-400 drop-shadow-lg' : 'text-blue-400 drop-shadow-xl'} ${index >= 1 ? 'bg-gradient-to-r from-current to-current bg-clip-text' : ''}`}>
+                        {pkg.price}
+                      </div>
+                      <div className={`text-sm ${index === 0 ? 'text-gray-500' : index === 1 ? 'text-purple-300/80' : 'text-blue-300/80'} font-medium`}>
+                        Ideal for: {pkg.ideal}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-3 mb-8">
+                  {/* Enhanced features list with tier styling */}
+                  <div className="space-y-4 mb-8 flex-grow">
                     {pkg.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">{feature}</span>
+                      <div key={featureIndex} className="flex items-center gap-3 group/feature">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${index === 0 ? 'bg-green-500/20' : index === 1 ? 'bg-purple-500/20' : 'bg-blue-500/20'} group-hover/feature:scale-110 transition-transform duration-200`}>
+                          <CheckCircle2 className={`w-4 h-4 ${index === 0 ? 'text-green-400' : index === 1 ? 'text-purple-400' : 'text-blue-400'} flex-shrink-0`} />
+                        </div>
+                        <span className="text-gray-300 group-hover:text-white transition-colors">
+                          {feature}
+                        </span>
                       </div>
                     ))}
                   </div>
 
-                  <Link
-                    href="/contact"
-                    className="block w-full text-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-medium transition-all duration-300 hover:from-blue-600 hover:to-purple-700"
-                  >
-                    Get Started
-                  </Link>
+                  {/* Enhanced CTA button with tier progression */}
+                  <div className="mt-auto">
+                    <Link
+                      href="/contact"
+                      className={`block w-full text-center px-6 py-4 rounded-full font-semibold transition-all duration-300 relative overflow-hidden group/btn ${
+                        index === 0 
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-green-500/25' 
+                          : index === 1 
+                          ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-xl hover:shadow-purple-500/30 ring-2 ring-purple-400/20' 
+                          : 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white shadow-xl hover:shadow-blue-500/30 ring-2 ring-blue-400/30'
+                      }`}
+                    >
+                      <div className="relative z-10 flex items-center justify-center gap-2">
+                        <span>Get Started</span>
+                        {index >= 1 && <span className="text-lg">✨</span>}
+                      </div>
+                      {/* Button hover effect */}
+                      <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
+                    </Link>
+                  </div>
                 </div>
-                
-                {/* Subtle hover effect */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${pkg.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-              </motion.div>
+                </motion.div>
+              </div>
             ))}
           </motion.div>
         </div>
       </section>
 
       {/* Development Process Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 bg-gradient-to-b from-gray-900/20 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-20" {...fadeInUp}>
+      <section className="relative py-24 sm:py-32 px-4 overflow-hidden">
+        {/* Background gradients */}
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-950/80 via-gray-900/40 to-gray-950/80"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+
+        <div className="relative max-w-7xl mx-auto">
+          <motion.div className="text-center mb-16 sm:mb-20" {...fadeInUp}>
             <motion.div 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 border border-blue-400/20 mb-6"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Workflow className="w-3 h-3 text-orange-400" />
-              <span className="text-xs text-orange-300 font-medium uppercase tracking-wider">Our Process</span>
+              <Workflow className="w-4 h-4 text-blue-400" />
+              <span className="text-sm text-blue-300 font-medium uppercase tracking-wider">Our Process</span>
             </motion.div>
             
-            <h2 className="text-5xl md:text-6xl font-light mb-8 gradient-text">How We Work</h2>
-            <p className="text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-light mb-6 sm:mb-8 gradient-text">How We Work</h2>
+            <p className="text-lg sm:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
               Our proven methodology ensures transparent communication and successful project delivery
             </p>
           </motion.div>
 
-          <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-          >
-            {developmentProcess.map((process, index) => (
-              <motion.div
-                key={index}
-                className="glass-card p-8 rounded-xl text-center group"
-                variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
-              >
-                <div className="flex justify-center mb-6">
-                  <div className="p-4 rounded-xl bg-blue-500/20 text-blue-400 group-hover:bg-blue-500/30 group-hover:scale-110 transition-all duration-300">
-                    {process.icon}
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-4 group-hover:text-blue-300 transition-colors">
-                  {process.phase}
-                </h3>
-                <p className="text-gray-400 leading-relaxed mb-4 group-hover:text-gray-300 transition-colors">
-                  {process.description}
-                </p>
-                <div className="text-sm text-gray-500 mb-2">{process.duration}</div>
-                <div className="flex flex-wrap gap-1 justify-center">
-                  {process.deliverables.map((deliverable, delIndex) => (
-                    <span
-                      key={delIndex}
-                      className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded text-xs"
+                     {/* Premium Process Timeline */}
+           <div className="relative">
+             {/* Elegant Timeline Background */}
+             <div className="absolute inset-0 overflow-hidden rounded-3xl">
+               <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-gray-900/60 to-slate-950/90"></div>
+               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+               <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+             </div>
+
+
+
+                           <div className="relative z-10 p-8 sm:p-12">
+                <motion.div 
+                  className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-6"
+                  variants={staggerContainer}
+                  initial="initial"
+                  whileInView="animate"
+                  viewport={{ once: true }}
+                >
+                  {developmentProcess.map((process, index) => (
+                    <motion.div
+                      key={index}
+                      className="relative group h-full flex flex-col"
+                      variants={fadeInUp}
                     >
-                      {deliverable}
-                    </span>
+                      {/* Premium Phase Indicator */}
+                      <div className="relative mb-6">
+                        <div className="flex justify-center">
+                          <motion.div 
+                            className="relative"
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                          >
+                            {/* Subtle Hover Glow */}
+                            <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-indigo-400/10 to-purple-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-md"></div>
+                            
+                            {/* Premium Circle Design */}
+                            <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-slate-800/90 to-slate-900/90 border border-slate-600/40 group-hover:border-indigo-400/60 transition-all duration-300 shadow-lg backdrop-blur-sm">
+                              {/* Inner Gradient Layer */}
+                              <div className="absolute inset-0.5 rounded-full bg-gradient-to-br from-slate-850/90 to-slate-900/90"></div>
+                              
+                              {/* Perfect Number Rendering */}
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span 
+                                  className="text-lg font-bold text-slate-200 group-hover:text-indigo-200 transition-colors duration-300"
+                                  style={{
+                                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+                                    WebkitFontSmoothing: 'antialiased',
+                                    MozOsxFontSmoothing: 'grayscale',
+                                    textRendering: 'optimizeLegibility',
+                                    letterSpacing: '0.02em'
+                                  }}
+                                >
+                                  {String(index + 1).padStart(2, '0')}
+                                </span>
+                              </div>
+
+                              {/* Subtle Inner Ring */}
+                              <div className="absolute inset-2 rounded-full border border-slate-700/30 group-hover:border-indigo-400/30 transition-all duration-300"></div>
+                            </div>
+
+                            {/* Refined Pulse Ring */}
+                            <div className="absolute inset-0 rounded-full border border-transparent group-hover:border-indigo-400/20 group-hover:scale-110 transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
+                          </motion.div>
+                        </div>
+                      </div>
+
+                      {/* Aligned Premium Card */}
+                      <motion.div
+                        className="relative flex-1 flex flex-col"
+                        whileHover={{ y: -2 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                      >
+                        {/* Premium Card Background */}
+                        <div className="relative h-full bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 backdrop-blur-xl border border-slate-600/30 rounded-2xl p-6 lg:p-7 shadow-[0_8px_32px_rgba(0,0,0,0.12)] group-hover:border-indigo-500/50 group-hover:shadow-[0_16px_48px_rgba(79,70,229,0.12)] transition-all duration-500 flex flex-col">
+                          {/* Subtle Inner Glow */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.02] via-transparent to-purple-500/[0.02] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                          
+                          {/* Top Accent Line */}
+                          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-500/20 to-transparent group-hover:via-indigo-400/30 transition-all duration-500"></div>
+
+                          <div className="relative z-10 flex flex-col h-full">
+                            {/* Header with Icon */}
+                            <div className="flex items-start gap-4 mb-4">
+                              <motion.div 
+                                className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-600 flex items-center justify-center group-hover:border-indigo-500 transition-colors duration-300 flex-shrink-0"
+                                whileHover={{ rotate: 2 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                <div className="text-indigo-400 text-xl group-hover:text-indigo-300 transition-colors duration-300">
+                                  {process.icon}
+                                </div>
+                              </motion.div>
+                              
+                              <div className="flex-1 min-w-0">
+                                <div className="text-xs text-indigo-400 uppercase tracking-wider font-medium mb-1 group-hover:text-indigo-300 transition-colors duration-300">
+                                  Phase {String(index + 1).padStart(2, '0')}
+                                </div>
+                                <h3 className="text-lg lg:text-xl font-bold text-white group-hover:text-indigo-100 transition-colors duration-300 leading-tight">
+                                  {process.phase.replace(/^\d+\.\s*/, '')}
+                                </h3>
+                              </div>
+                            </div>
+
+                            {/* Description */}
+                            <p className="text-slate-400 text-sm leading-relaxed mb-5 group-hover:text-slate-300 transition-colors duration-300 flex-grow">
+                              {process.description}
+                            </p>
+
+                            {/* Duration */}
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                              <span className="text-xs text-slate-500 font-medium uppercase tracking-wider group-hover:text-slate-400 transition-colors duration-300">
+                                {process.duration}
+                              </span>
+                            </div>
+
+                            {/* Deliverables */}
+                            <div className="mt-auto">
+                              <h4 className="text-xs font-semibold text-indigo-400 mb-3 uppercase tracking-wider group-hover:text-indigo-300 transition-colors duration-300">
+                                Key Deliverables
+                              </h4>
+                              <div className="space-y-2">
+                                {process.deliverables.map((deliverable: string, delIndex: number) => (
+                                  <motion.div
+                                    key={delIndex}
+                                    className="relative"
+                                    initial={{ opacity: 0, y: 5 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3, delay: delIndex * 0.1 }}
+                                    viewport={{ once: true }}
+                                  >
+                                    <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-slate-800/80 to-slate-700/80 border border-slate-600/40 rounded-2xl text-slate-300 text-sm font-medium group-hover:from-indigo-900/30 group-hover:to-indigo-800/30 group-hover:border-indigo-500/60 group-hover:text-slate-100 transition-all duration-300 backdrop-blur-sm shadow-sm">
+                                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-300 flex-shrink-0 shadow-sm"></div>
+                                      <span className="leading-tight">{deliverable}</span>
+                                    </div>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Bottom Accent Line */}
+                          <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-slate-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        </div>
+                      </motion.div>
+
+                      {/* Mobile Connection */}
+                      {index < developmentProcess.length - 1 && (
+                        <div className="lg:hidden flex justify-center mt-6 mb-2">
+                          <motion.div 
+                            className="w-px h-8 bg-gradient-to-b from-indigo-400/30 via-purple-400/20 to-transparent"
+                            initial={{ scaleY: 0 }}
+                            whileInView={{ scaleY: 1 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                            viewport={{ once: true }}
+                          />
+                        </div>
+                      )}
+                    </motion.div>
                   ))}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              </div>
+           </div>
         </div>
       </section>
 
@@ -528,7 +714,7 @@ export default function ServicesPage() {
           </motion.div>
 
           <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 pt-6"
             variants={staggerContainer}
             initial="initial"
             whileInView="animate"
