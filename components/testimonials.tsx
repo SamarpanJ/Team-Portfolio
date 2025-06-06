@@ -92,9 +92,10 @@ const testimonials: Testimonial[] = [
 const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials]
 
 export function TestimonialsSection() {
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [speed, setSpeed] = useState(1)
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const [isPaused, setIsPaused] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [touchedCard, setTouchedCard] = useState<number | null>(null)
   const controls = useAnimation()
   const containerRef = useRef<HTMLDivElement>(null)
   const animationRef = useRef<any>(null)
@@ -106,9 +107,21 @@ export function TestimonialsSection() {
   const x = useMotionValue(0)
   
   const totalWidth = 440 * testimonials.length
+  const SPEED = 1.8 // Fixed fast speed
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const handleMouseMove = (event: React.MouseEvent) => {
-    if (!containerRef.current) return
+    if (isMobile || !containerRef.current) return
     const rect = containerRef.current.getBoundingClientRect()
     const x = (event.clientX - rect.left - rect.width / 2) / 20
     const y = (event.clientY - rect.top - rect.height / 2) / 20
@@ -117,6 +130,7 @@ export function TestimonialsSection() {
   }
 
   const handleMouseLeave = () => {
+    if (isMobile) return
     mouseX.set(0)
     mouseY.set(0)
     setHoveredCard(null)
@@ -128,9 +142,9 @@ export function TestimonialsSection() {
     }
     
     const currentX = x.get()
-    const duration = 90 / speed
+    const duration = isMobile ? 100 / SPEED : 80 / SPEED // Slower on mobile for better performance
     
-    // Start infinite animation from current position
+    // Ultra smooth infinite animation
     animationRef.current = animate(x, [currentX, currentX - totalWidth], {
       duration: duration,
       ease: "linear",
@@ -145,19 +159,120 @@ export function TestimonialsSection() {
     }
   }
 
+  // Desktop hover handlers
+  const handleCardHover = (index: number) => {
+    if (isMobile) return
+    setHoveredCard(index)
+    setIsPaused(true)
+    stopAnimation()
+  }
+
+  const handleCardLeave = () => {
+    if (isMobile) return
+    setHoveredCard(null)
+    setIsPaused(false)
+    startAnimation()
+  }
+
+  // Mobile touch handlers
+  const handleTouchStart = (index: number) => {
+    if (!isMobile) return
+    setTouchedCard(index)
+    setIsPaused(true)
+    stopAnimation()
+  }
+
+  const handleTouchEnd = () => {
+    if (!isMobile) return
+    setTouchedCard(null)
+    setIsPaused(false)
+    startAnimation()
+  }
+
+  const handleTouchCancel = () => {
+    if (!isMobile) return
+    setTouchedCard(null)
+    setIsPaused(false)
+    startAnimation()
+  }
+
+  // Prevent touch events from interfering with scroll and text selection
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchedCard !== null) {
+      e.preventDefault()
+    }
+  }
+
+  // Prevent context menu and text selection on long press
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (isMobile) {
+      e.preventDefault()
+    }
+  }
+
   useEffect(() => {
-    if (isPlaying) {
+    if (!isPaused) {
       startAnimation()
     } else {
       stopAnimation()
     }
     
     return () => stopAnimation()
-  }, [isPlaying, speed])
+  }, [isPaused, isMobile])
 
   useEffect(() => {
+    startAnimation() // Auto-start on mount
     return () => stopAnimation()
-  }, [])
+  }, [isMobile])
+
+  // Global touch end listener for mobile to ensure state cleanup
+  useEffect(() => {
+    if (!isMobile) return
+
+    const handleGlobalTouchEnd = () => {
+      if (touchedCard !== null) {
+        setTouchedCard(null)
+        setIsPaused(false)
+        startAnimation()
+      }
+      
+      // Force reset any stuck hover states on mobile
+      if (containerRef.current) {
+        containerRef.current.style.pointerEvents = 'none'
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.style.pointerEvents = 'auto'
+          }
+        }, 10)
+      }
+    }
+
+    const handleGlobalTouchCancel = () => {
+      if (touchedCard !== null) {
+        setTouchedCard(null)
+        setIsPaused(false)
+        startAnimation()
+      }
+      
+      // Force reset any stuck hover states on mobile
+      if (containerRef.current) {
+        containerRef.current.style.pointerEvents = 'none'
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.style.pointerEvents = 'auto'
+          }
+        }, 10)
+      }
+    }
+
+    document.addEventListener('touchend', handleGlobalTouchEnd, { passive: true })
+    document.addEventListener('touchcancel', handleGlobalTouchCancel, { passive: true })
+
+    return () => {
+      document.removeEventListener('touchend', handleGlobalTouchEnd)
+      document.removeEventListener('touchcancel', handleGlobalTouchCancel)
+    }
+  }, [isMobile, touchedCard])
 
   return (
     <section 
@@ -166,7 +281,7 @@ export function TestimonialsSection() {
       onMouseLeave={handleMouseLeave}
       ref={containerRef}
     >
-      {/* Ultra Premium Background Effects */}
+      {/* Ultra Premium Background Effects - Simplified for mobile */}
       <div className="absolute inset-0">
         {/* Animated Gradient Mesh */}
         <div className="absolute inset-0 opacity-15">
@@ -175,32 +290,34 @@ export function TestimonialsSection() {
           <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
         </div>
         
-        {/* Floating Particles */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          style={{ x: springX, y: springY }}
-        >
-          {[...Array(12)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-white/25 rounded-full"
-              style={{
-                left: `${20 + (i * 7)}%`,
-                top: `${30 + (i * 4)}%`,
-              }}
-              animate={{
-                y: [-20, 20, -20],
-                opacity: [0.1, 0.5, 0.1],
-                scale: [0.5, 1, 0.5],
-              }}
-              transition={{
-                duration: 6 + i * 0.4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
-        </motion.div>
+        {/* Floating Particles - Disabled on mobile for performance */}
+        {!isMobile && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{ x: springX, y: springY }}
+          >
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-white/25 rounded-full"
+                style={{
+                  left: `${20 + (i * 7)}%`,
+                  top: `${30 + (i * 4)}%`,
+                }}
+                animate={{
+                  y: [-20, 20, -20],
+                  opacity: [0.1, 0.5, 0.1],
+                  scale: [0.5, 1, 0.5],
+                }}
+                transition={{
+                  duration: 6 + i * 0.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+          </motion.div>
+        )}
       </div>
 
       <div className="max-w-8xl mx-auto relative z-10">
@@ -225,7 +342,7 @@ export function TestimonialsSection() {
           </motion.div>
           
           <motion.h2 
-            className="text-5xl sm:text-6xl md:text-7xl font-light mb-8 tracking-tight leading-none"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light mb-8 tracking-tight leading-none"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -241,7 +358,7 @@ export function TestimonialsSection() {
           </motion.h2>
           
           <motion.p 
-            className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light"
+            className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light px-4 sm:px-0"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -251,105 +368,87 @@ export function TestimonialsSection() {
           </motion.p>
         </motion.div>
 
-        {/* Premium Controls */}
-        <motion.div 
-          className="flex justify-center mb-12 sm:mb-16 px-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 md:gap-6 px-3 sm:px-6 md:px-8 py-3 sm:py-4 rounded-2xl sm:rounded-3xl bg-black/40 backdrop-blur-2xl border border-white/[0.08] shadow-2xl w-full max-w-md sm:max-w-none sm:w-auto">
-            <Button
-              variant="ghost"
-              onClick={() => setIsPlaying(!isPlaying)}
-              className="text-gray-300 hover:text-white active:text-white text-sm px-3 sm:px-4 py-2 h-auto rounded-2xl transition-colors duration-150 hover:bg-white/[0.05] active:bg-white/[0.1] active:scale-95 w-full sm:w-auto touch-manipulation"
-            >
-              {isPlaying ? (
-                <><Pause className="w-3 h-3 sm:w-4 sm:h-4 mr-2" /> Pause</>
-              ) : (
-                <><Play className="w-3 h-3 sm:w-4 sm:h-4 mr-2" /> Play</>
-              )}
-            </Button>
-            
-            <div className="w-full h-px sm:w-px sm:h-6 bg-gradient-to-r sm:bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-            
-            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto">
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                {[
-                  { label: 'Slow', value: 0.4 },
-                  { label: 'Normal', value: 1 },
-                  { label: 'Fast', value: 1.8 }
-                ].map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => setSpeed(option.value)}
-                    className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 text-xs rounded-2xl font-medium transition-colors duration-150 touch-manipulation active:scale-95 ${
-                      speed === option.value 
-                        ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-300 border border-violet-500/30 shadow-lg' 
-                        : 'text-gray-400 hover:text-white hover:bg-white/[0.05] active:bg-white/[0.1] active:text-white'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
         {/* Clean Flowing Container */}
         <div className="relative">
-          {/* Subtle Gradient Masks - Hidden on mobile, visible on larger screens */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-black via-black/95 to-transparent z-20 pointer-events-none hidden sm:block" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-black via-black/95 to-transparent z-20 pointer-events-none hidden sm:block" />
+          {/* Subtle Gradient Masks - Only show on larger screens */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-r from-black via-black/95 to-transparent z-20 pointer-events-none hidden sm:block" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-l from-black via-black/95 to-transparent z-20 pointer-events-none hidden sm:block" />
           
-          {/* Flowing Track */}
-          <div className="overflow-hidden py-8">
+          {/* Ultra Smooth Flowing Track */}
+          <div className="py-6 sm:py-8 px-1 sm:px-2 md:px-4" style={{ 
+            overflow: 'hidden', 
+            willChange: 'transform',
+            backfaceVisibility: 'hidden',
+            perspective: isMobile ? 'none' : '1000px'
+          }}>
             <motion.div
-              className="flex gap-4 sm:gap-6 md:gap-8"
-              style={{ x, width: 'fit-content' }}
+              className="flex gap-3 sm:gap-5 md:gap-6 lg:gap-7"
+              style={{ 
+                x, 
+                width: 'fit-content',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden'
+              }}
             >
               {extendedTestimonials.map((testimonial, index) => (
                 <motion.div
                   key={`${testimonial.id}-${index}`}
-                  className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[420px] group"
-                  onHoverStart={() => setHoveredCard(index)}
-                  onHoverEnd={() => setHoveredCard(null)}
-                  whileHover={{ 
-                    y: -12, 
-                    scale: 1.02,
+                  className={`flex-shrink-0 w-[260px] sm:w-[280px] md:w-[320px] lg:w-[420px] ${isMobile ? 'touch-manipulation' : 'cursor-pointer group'}`}
+                  onMouseEnter={() => handleCardHover(index)}
+                  onMouseLeave={handleCardLeave}
+                  onTouchStart={() => handleTouchStart(index)}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchCancel={handleTouchCancel}
+                  onTouchMove={handleTouchMove}
+                  onContextMenu={handleContextMenu}
+                  whileHover={isMobile ? {} : { 
+                    y: -6, 
+                    scale: 1.008,
                   }}
+                  whileTap={isMobile ? { scale: 0.98 } : {}}
                   transition={{ 
                     type: "spring", 
-                    stiffness: 300, 
+                    stiffness: isMobile ? 300 : 500, 
                     damping: 30,
-                    duration: 0.4 
+                    duration: isMobile ? 0.3 : 0.2 
                   }}
+                  style={isMobile ? {
+                    WebkitUserSelect: 'none',
+                    userSelect: 'none',
+                    WebkitTouchCallout: 'none',
+                    WebkitTapHighlightColor: 'transparent'
+                  } : {}}
                 >
-                  <div className="relative h-full">
-                    {/* Clean Premium Card */}
-                    <div className="relative p-4 sm:p-6 md:p-8 rounded-3xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-2xl border border-white/[0.06] group-hover:border-white/[0.15] transition-all duration-500 shadow-xl group-hover:shadow-2xl h-full overflow-hidden min-h-[240px] sm:min-h-[260px] md:min-h-[280px] flex flex-col">
+                  <div 
+                    className="relative h-full px-1 py-2"
+                    style={isMobile ? {
+                      WebkitUserSelect: 'none',
+                      userSelect: 'none',
+                      WebkitTouchCallout: 'none'
+                    } : {}}
+                  >
+                    {/* Ultra Premium Card */}
+                    <div className={`relative p-3 sm:p-4 md:p-6 lg:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-2xl border transition-all duration-300 shadow-xl h-full min-h-[220px] sm:min-h-[240px] md:min-h-[260px] lg:min-h-[280px] flex flex-col overflow-visible ${(hoveredCard === index || touchedCard === index) ? 'border-white/[0.15] shadow-2xl' : 'border-white/[0.06]'}`}>
                       
                       {/* Subtle Background Glow */}
-                      <div className={`absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-500 bg-gradient-to-br ${testimonial.accentColor} blur-3xl scale-150 -z-10`} />
+                      <div className={`absolute inset-0 transition-opacity duration-300 bg-gradient-to-br ${testimonial.accentColor} blur-3xl scale-150 -z-10 ${(hoveredCard === index || touchedCard === index) ? 'opacity-[0.08]' : 'opacity-0'}`} />
                       
                       {/* Floating Quote Mark */}
                       <motion.div
-                        className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-10"
-                        animate={hoveredCard === index ? {
+                        className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10"
+                        animate={(hoveredCard === index || touchedCard === index) ? {
                           rotate: [0, 6, -6, 0],
                           scale: [1, 1.1, 1],
                         } : {}}
                         transition={{ duration: 4, repeat: Infinity }}
                       >
-                        <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br ${testimonial.accentColor} opacity-20 backdrop-blur-xl flex items-center justify-center group-hover:opacity-30 transition-opacity duration-500`}>
-                          <Quote className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-white" />
+                        <div className={`w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${testimonial.accentColor} backdrop-blur-xl flex items-center justify-center transition-opacity duration-300 ${(hoveredCard === index || touchedCard === index) ? 'opacity-30' : 'opacity-20'}`}>
+                          <Quote className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 text-white" />
                         </div>
                       </motion.div>
 
                       {/* Rating Stars */}
-                      <div className="flex gap-1 mb-4 sm:mb-5 md:mb-6">
+                      <div className="flex gap-1 mb-3 sm:mb-4 md:mb-5 lg:mb-6">
                         {[...Array(testimonial.rating)].map((_, i) => (
                           <motion.div
                             key={i}
@@ -363,13 +462,13 @@ export function TestimonialsSection() {
                       </div>
 
                       {/* Testimonial Content */}
-                      <blockquote className="text-gray-200 leading-relaxed mb-4 sm:mb-6 md:mb-8 font-light text-sm sm:text-base group-hover:text-white transition-colors duration-500 flex-grow">
+                      <blockquote className={`leading-relaxed mb-3 sm:mb-4 md:mb-6 lg:mb-8 font-light text-xs sm:text-sm md:text-base transition-colors duration-300 flex-grow pr-8 sm:pr-12 md:pr-14 lg:pr-16 ${(hoveredCard === index || touchedCard === index) ? 'text-white' : 'text-gray-200'}`}>
                         "{testimonial.content}"
                       </blockquote>
 
                       {/* Clean Author Section */}
-                      <div className="flex items-center gap-3 sm:gap-4 mt-auto">
-                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 ring-1 ring-white/10 group-hover:ring-white/20 transition-all duration-500">
+                      <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mt-auto">
+                        <Avatar className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 ring-1 transition-all duration-300 ${(hoveredCard === index || touchedCard === index) ? 'ring-white/20' : 'ring-white/10'}`}>
                           <AvatarImage 
                             src={testimonial.avatar} 
                             alt={testimonial.name}
@@ -381,7 +480,7 @@ export function TestimonialsSection() {
                         </Avatar>
                         
                         <div className="min-w-0 flex-1">
-                          <h4 className="text-white font-semibold text-sm sm:text-base leading-tight">
+                          <h4 className="text-white font-semibold text-xs sm:text-sm md:text-base leading-tight">
                             {testimonial.name}
                           </h4>
                           {testimonial.title && (
