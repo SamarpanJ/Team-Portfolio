@@ -58,7 +58,6 @@ export default function ContactPage() {
     
     // Simulate form submission
     setTimeout(() => {
-      console.log("Form submitted:", formData)
       setIsSubmitting(false)
       // Reset form or show success message
     }, 2000)
@@ -84,25 +83,19 @@ export default function ContactPage() {
       value: "web-development", 
       label: "Web Development", 
       icon: <Globe className="w-4 h-4" />, 
-      description: "Modern websites and web applications"
+      description: "Frontend & fullstack web applications (React, Next.js, MERN/PERN)"
     },
     { 
-      value: "mobile-development", 
-      label: "Mobile Development", 
-      icon: <Smartphone className="w-4 h-4" />, 
-      description: "iOS and Android applications"
+      value: "software-development", 
+      label: "Software Development", 
+      icon: <Code className="w-4 h-4" />, 
+      description: "Desktop applications and system software"
     },
     { 
       value: "ai-solutions", 
-      label: "AI Solutions", 
+      label: "AI & Intelligent Systems", 
       icon: <Brain className="w-4 h-4" />, 
-      description: "Machine learning and AI integration"
-    },
-    { 
-      value: "iot-development", 
-      label: "IoT Development", 
-      icon: <Cpu className="w-4 h-4" />, 
-      description: "Connected devices and IoT solutions"
+      description: "AI agents and LLM integration"
     },
     { 
       value: "consulting", 
@@ -129,9 +122,9 @@ export default function ContactPage() {
     },
     {
       icon: <Phone className="w-5 h-5 text-green-400" />,
-      label: "PHONE",
-      value: "+1 (555) 123-4567",
-      description: "Call for urgent inquiries",
+      label: "LANGUAGES",
+      value: "Multilingual Support",
+      description: "English, French, Hindi, Bengali, Odia",
     },
     {
       icon: <MapPin className="w-5 h-5 text-purple-400" />,
@@ -161,7 +154,7 @@ export default function ContactPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="py-32 px-4 relative overflow-hidden">
         {/* Enhanced Background Effects */}
@@ -196,7 +189,7 @@ export default function ContactPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Ready to transform your ideas into intelligent solutions? Connect with our team and let's discuss your project.
+              Ready to transform your ideas into intelligent solutions? Connect with our multilingual team (English, French, Hindi, Bengali, Odia) and let's discuss your project.
             </motion.p>
           </motion.div>
 

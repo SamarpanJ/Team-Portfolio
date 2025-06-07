@@ -12,10 +12,43 @@ interface DataPoint {
   speed: number;
 }
 
+// Add performance detection at the top level
+const getDevicePerformance = () => {
+  if (typeof window === 'undefined') return 'high';
+  
+  // Check for low-end devices
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') as WebGLRenderingContext | null;
+    
+    if (!gl) return 'low';
+    
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : '';
+  
+    // Detect low-end mobile GPUs
+    if (typeof renderer === 'string' && renderer.includes('Adreno') && (renderer.includes('306') || renderer.includes('308') || renderer.includes('330'))) {
+      return 'low';
+    }
+  } catch (error) {
+    return 'medium';
+  }
+  
+  // Check CPU cores and memory as additional indicators
+  const cores = navigator.hardwareConcurrency || 4;
+  const memory = (navigator as any).deviceMemory || 4;
+  
+  if (cores <= 2 || memory <= 2) return 'low';
+  if (cores <= 4 && memory <= 4) return 'medium';
+  
+  return 'high';
+};
+
 function WireframeGlobe({ mousePosition, isMobile }: { mousePosition: { x: number; y: number }, isMobile: boolean }) {
   const globeRef = useRef<THREE.Group>(null);
   const dataPointsRef = useRef<THREE.Group>(null);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const [devicePerformance] = useState(() => getDevicePerformance());
   
   // Update window width on resize
   useEffect(() => {

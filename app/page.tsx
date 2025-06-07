@@ -39,25 +39,25 @@ export default function HomePage() {
     {
       icon: <Code className="w-8 h-8" />,
       title: "Custom Software Development",
-      description: "Tailored solutions built with modern technologies for your specific business needs",
+      description: "Tailored solutions using MERN/PERN stacks, Django, Flask, and FastAPI for your specific business needs",
       color: "from-blue-500 to-cyan-500",
     },
     {
       icon: <Brain className="w-8 h-8" />,
       title: "AI & Intelligent Systems",
-      description: "Smart applications powered by machine learning and natural language processing",
+      description: "Custom AI agents, LLM integration, and RAG systems using TensorFlow, PyTorch, and Hugging Face",
       color: "from-purple-500 to-pink-500",
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: "Web & Mobile Solutions",
-      description: "Responsive web applications and cross-platform mobile apps that engage users",
+      title: "Full-stack Web Development",
+      description: "MERN/PERN stacks, Next.js, React.js applications with modern UI using Three.js for interactive experiences",
       color: "from-green-500 to-emerald-500",
     },
     {
       icon: <Server className="w-8 h-8" />,
       title: "Cloud & Infrastructure",
-      description: "Scalable cloud architectures and robust backend systems for growing businesses",
+      description: "AWS, Google Cloud, Vercel deployments with Docker, serverless architectures, and real-time communication",
       color: "from-orange-500 to-red-500",
     },
   ]
@@ -72,23 +72,23 @@ export default function HomePage() {
   const whyChooseUs = [
     {
       icon: <Target className="w-5 h-5" />,
-      title: "Results-Driven Approach",
-      description: "We focus on delivering solutions that drive real business value and measurable outcomes",
+      title: "Global Communication",
+      description: "Multilingual team fluent in English, French, Hindi, Bengali, and Odia for seamless international collaboration",
     },
     {
       icon: <Users className="w-5 h-5" />,
-      title: "Expert Team",
-      description: "Skilled professionals with diverse backgrounds and cutting-edge technical expertise",
+      title: "Diverse Technical Expertise",
+      description: "Skilled in JavaScript/TypeScript, Python, C/C++, with experience in modern frameworks and AI technologies",
     },
     {
       icon: <Clock className="w-5 h-5" />,
-      title: "Reliable Delivery",
-      description: "Consistent, on-time project delivery with transparent communication throughout",
+      title: "Innovation-Driven Culture",
+      description: "Collaborative team focused on problem-solving, quality code, and real-world results driven by curiosity",
     },
     {
       icon: <Shield className="w-5 h-5" />,
-      title: "Quality Assurance",
-      description: "Rigorous testing and quality control ensure robust, secure, and scalable solutions",
+      title: "Quality & Security",
+      description: "Rigorous testing and quality control ensure robust, secure, and scalable solutions with modern best practices",
     },
   ]
 
@@ -128,14 +128,14 @@ export default function HomePage() {
               </h1>
             </div>
 
-            <motion.p
-              className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-12 max-w-4xl mx-auto font-light leading-relaxed px-2 sm:px-0 w-full"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              We transform ideas into intelligent software solutions that drive innovation and deliver exceptional user experiences
-            </motion.p>
+                      <motion.p
+            className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-12 max-w-4xl mx-auto font-light leading-relaxed px-2 sm:px-0 w-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            We are a passionate team of software engineers delivering high-quality, innovative software solutions. By leveraging intelligent systems and modern engineering practices, we build tools that are practical, adaptable, and built for long-term value.
+          </motion.p>
 
             <motion.div
               className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0 w-full max-w-lg sm:max-w-2xl mx-auto"

@@ -61,88 +61,88 @@ export default function ServicesPage() {
   const coreServices = [
     {
       title: "Custom Software Development",
-      description: "Tailored applications built from the ground up to meet your specific business requirements and goals",
+      description: "MERN/PERN stack applications, Django, Flask, FastAPI backends tailored to your specific business requirements",
       icon: <Code className="w-8 h-8" />,
       features: [
-        "Full-stack web applications",
-        "API development and integration",
-        "Database design and optimization",
-        "Scalable architecture planning",
-        "Modern framework implementation"
+        "Full-stack web applications (MERN/PERN)",
+        "API development with Express.js/FastAPI",
+        "Database optimization (PostgreSQL, MongoDB, Firebase, Supabase, Pinecone)",
+        "Modern framework implementation",
+        "Real-time features with Socket.IO"
       ],
       color: "from-blue-500 to-cyan-500",
       deliverables: ["Source Code", "Documentation", "Deployment Guide"]
     },
     {
-      title: "AI & Machine Learning Solutions",
-      description: "Intelligent systems powered by cutting-edge AI technologies to automate and optimize your business processes",
+      title: "AI & Intelligent Systems",
+      description: "AI agents and intelligent systems integrating with LLMs, implementing RAG systems using TensorFlow, PyTorch, Hugging Face",
       icon: <Brain className="w-8 h-8" />,
       features: [
-        "Conversational AI chatbots",
-        "Natural language processing",
-        "Sentiment analysis systems",
-        "AI model integration",
-        "RAG system implementation"
+        "Custom AI agents and assistants",
+        "LLM integration and implementation",
+        "RAG system development",
+        "Conversational AI solutions",
+        "Intelligent workflow automation"
       ],
       color: "from-purple-500 to-pink-500",
-      deliverables: ["AI Models", "Integration APIs", "Training Data"]
+      deliverables: ["AI Agents", "LLM Integrations", "RAG Systems"]
     },
     {
-      title: "Mobile App Development",
-      description: "Cross-platform mobile applications that provide seamless user experiences across iOS and Android devices",
-      icon: <Smartphone className="w-8 h-8" />,
+      title: "Full-stack Web Development",
+      description: "MERN/PERN stacks, Next.js, React Native with modern UI using Three.js for interactive experiences",
+      icon: <Globe className="w-8 h-8" />,
       features: [
-        "React Native development",
-        "Native iOS and Android apps",
-        "Cross-platform compatibility",
-        "App Store deployment",
+        "Full-stack web applications (MERN/PERN)",
+        "Next.js and React.js development",
+        "Interactive experiences with Three.js/WebGL",
+        "Responsive and modern UI design",
         "Performance optimization"
       ],
       color: "from-green-500 to-emerald-500",
-      deliverables: ["Mobile Apps", "Store Listings", "User Guides"]
+      deliverables: ["Web Applications", "UI Components", "Documentation"]
+    },
+    {
+      title: "Database Solutions",
+      description: "Comprehensive database design, optimization, and management using PostgreSQL, MongoDB, Firebase, Supabase, and Pinecone for vector data",
+      icon: <Database className="w-8 h-8" />,
+      features: [
+        "PostgreSQL (Relational database design & optimization)",
+        "MongoDB (NoSQL document database solutions)",
+        "Firebase (Realtime NoSQL with live sync)",
+        "Supabase (PostgreSQL-based Backend-as-a-Service)",
+        "Pinecone (Vector database for AI/ML applications)"
+      ],
+      color: "from-cyan-500 to-blue-500",
+      deliverables: ["Database Schema", "Query Optimization", "Data Migration"]
     },
     {
       title: "Cloud & Infrastructure",
-      description: "Scalable cloud solutions and robust infrastructure to support your growing business needs",
+      description: "AWS, Google Cloud, Vercel deployments with Docker, serverless architectures, and microservices",
       icon: <Cloud className="w-8 h-8" />,
       features: [
-        "AWS and Google Cloud setup",
-        "Serverless architecture",
-        "Auto-scaling infrastructure",
-        "Security implementation",
-        "Performance monitoring"
+        "AWS, Google Cloud, Vercel setup",
+        "Serverless and edge deployments",
+        "Docker containerization",
+        "Microservices architecture",
+        "Real-time communication systems"
       ],
       color: "from-orange-500 to-red-500",
-      deliverables: ["Cloud Setup", "Monitoring Tools", "Security Protocols"]
+      deliverables: ["Cloud Setup", "Container Images", "DevOps Tools"]
     },
-    {
-      title: "IoT Solutions",
-      description: "Connected device ecosystems and real-time data processing for smart business operations",
-      icon: <Cpu className="w-8 h-8" />,
-      features: [
-        "Device connectivity setup",
-        "Real-time data dashboards",
-        "Sensor integration",
-        "MQTT protocol implementation",
-        "Edge computing solutions"
-      ],
-      color: "from-indigo-500 to-purple-500",
-      deliverables: ["IoT Platform", "Device Firmware", "Data Analytics"]
-    },
-    {
-      title: "E-commerce Development",
-      description: "Complete online marketplace solutions with modern features and seamless payment integration",
-      icon: <ShoppingCart className="w-8 h-8" />,
-      features: [
-        "Shopping cart functionality",
-        "Payment gateway integration",
-        "Inventory management",
-        "Order tracking system",
-        "Admin dashboard"
-      ],
-      color: "from-pink-500 to-red-500",
-      deliverables: ["E-commerce Site", "Admin Panel", "Payment Setup"]
-    }
+          {
+        title: "E-commerce Platforms",
+        description: "Modern e-commerce solutions with beautiful UI, secure payments, and scalable marketplace features",
+        icon: <ShoppingCart className="w-8 h-8" />,
+        features: [
+          "Modern user interfaces",
+          "Secure payment integration",
+          "Inventory management",
+          "Business insights dashboards",
+          "Scalable marketplace solutions"
+        ],
+        color: "from-pink-500 to-red-500",
+        deliverables: ["E-commerce Site", "Admin Panel", "Payment Setup"]
+      }
   ]
 
   const servicePackages = [
@@ -154,7 +154,7 @@ export default function ServicesPage() {
         "Basic web application",
         "Responsive design",
         "Basic API integration",
-        "Database setup",
+        "Database setup (PostgreSQL/MongoDB)",
         "1 month support"
       ],
       ideal: "Small businesses, MVPs",
@@ -165,8 +165,8 @@ export default function ServicesPage() {
       description: "Comprehensive solution for growing businesses requiring advanced features and integrations",
       price: "Starting at $7,500",
       features: [
-        "Advanced web/mobile app",
-        "AI integration",
+        "Advanced web applications",
+        "AI agent integration",
         "Cloud deployment",
         "Security implementation",
         "3 months support"
@@ -180,9 +180,9 @@ export default function ServicesPage() {
       price: "Starting at $15,000",
       features: [
         "Full-stack solution",
-        "Custom AI development",
-        "IoT integration",
+        "Custom AI agents",
         "Enterprise security",
+        "Business intelligence",
         "6 months support"
       ],
       ideal: "Large organizations, complex systems",
@@ -372,6 +372,108 @@ export default function ServicesPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Technology Stack Section */}
+      <section className="py-32 px-4 border-t border-gray-800/50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div className="text-center mb-20" {...fadeInUp}>
+            <motion.div 
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <Cpu className="w-3 h-3 text-cyan-400" />
+              <span className="text-xs text-cyan-300 font-medium uppercase tracking-wider">Technology Stack</span>
+            </motion.div>
+            
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 sm:mb-8 gradient-text px-2 sm:px-0">Technologies We Use</h2>
+            <p className="text-lg sm:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
+              Our comprehensive tech stack enables us to build scalable, modern solutions
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            {[
+              {
+                category: "Frontend Development",
+                technologies: ["Next.js", "React.js", "Tailwind CSS", "Three.js", "WebGL"],
+                icon: <Globe className="w-6 h-6" />,
+                color: "from-blue-500 to-cyan-500"
+              },
+              {
+                category: "Backend & APIs",
+                technologies: ["Node.js", "Express.js", "Django", "Flask", "FastAPI"],
+                icon: <Server className="w-6 h-6" />,
+                color: "from-green-500 to-emerald-500"
+              },
+              {
+                category: "AI & Intelligent Systems",
+                technologies: ["TensorFlow", "PyTorch", "Hugging Face", "LLM Integration", "RAG Systems"],
+                icon: <Brain className="w-6 h-6" />,
+                color: "from-purple-500 to-pink-500"
+              },
+              {
+                category: "Cloud & DevOps",
+                technologies: ["AWS", "Google Cloud", "Vercel", "Docker", "GitHub Actions"],
+                icon: <Cloud className="w-6 h-6" />,
+                color: "from-orange-500 to-red-500"
+              }
+            ].map((stack, index) => (
+              <motion.div
+                key={index}
+                className="dev-service-card p-6 group transition-all duration-300 relative"
+                variants={fadeInUp}
+                whileHover={{ y: -8 }}
+              >
+                <div className="relative z-10">
+                  <div className={`p-3 rounded-xl bg-gradient-to-br ${stack.color} mb-4 w-fit group-hover:scale-110 transition-transform duration-300`}>
+                    <div className="text-white">{stack.icon}</div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-4 group-hover:text-purple-300 transition-colors">
+                    {stack.category}
+                  </h3>
+                  <div className="space-y-2">
+                    {stack.technologies.map((tech, techIndex) => (
+                      <div key={techIndex} className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                        <span className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">{tech}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            className="mt-16 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-xl font-semibold text-white mb-4">Programming Languages</h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {["JavaScript/TypeScript", "Python", "C/C++", "SQL", "HTML & CSS", "Bash/Shell"].map((lang, index) => (
+                <span
+                  key={index}
+                  className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm border border-gray-700/30 hover:border-cyan-500/50 transition-colors"
+                >
+                  {lang}
+                </span>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
