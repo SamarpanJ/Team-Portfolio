@@ -38,7 +38,7 @@ export function Navigation() {
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-lg font-semibold text-white whitespace-nowrap">
-              Intelligent Systems
+              Bytovia
             </span>
             <span className="text-xs text-gray-400 font-light whitespace-nowrap">
               Software Development
@@ -69,7 +69,7 @@ export function Navigation() {
             </div>
             <div className="flex flex-col">
               <span className="text-base font-semibold text-white">
-                Intelligent Systems
+                Bytovia
               </span>
               <span className="text-xs text-gray-400">
                 Software Development

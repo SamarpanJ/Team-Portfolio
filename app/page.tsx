@@ -118,7 +118,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <Stars className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
-              <span className="text-xs sm:text-sm text-gray-300">Software Development & Intelligent Systems</span>
+              <span className="text-xs sm:text-sm text-gray-300">Software Development & AI Solutions</span>
             </motion.div>
 
             <div className="mb-6 sm:mb-8 w-full" style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>

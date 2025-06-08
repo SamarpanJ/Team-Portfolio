@@ -21,12 +21,12 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "Intelligent Systems - Software Development & AI Solutions",
+  title: "Bytovia - Software Development & AI Solutions",
   description:
     "Passionate team of software engineers focused on delivering high-quality, innovative software solutions through intelligent systems and modern engineering practices.",
   generator: 'Next.js',
   keywords: 'software development, AI solutions, machine learning, web development, mobile development, intelligent systems',
-  authors: [{ name: 'Intelligent Systems Team' }],
+  authors: [{ name: 'Bytovia Team' }],
 }
 
 export default function RootLayout({

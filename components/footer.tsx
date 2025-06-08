@@ -53,7 +53,7 @@ export default function Footer() {
     { 
       icon: <Mail className="w-4 h-4" />, 
       label: "Email", 
-      href: "mailto:team@intelligentsystems.dev",
+      href: "mailto:team@bytovia.dev",
       color: "hover:text-emerald-400"
     },
   ]
@@ -93,12 +93,12 @@ export default function Footer() {
                   <Code className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-lg font-semibold text-white group-hover:text-blue-200 transition-colors duration-300">
-                    Intelligent Systems
-                  </span>
-                  <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
-                    Software Development & AI Solutions
-                  </span>
+                                  <span className="text-lg font-semibold text-white group-hover:text-blue-200 transition-colors duration-300">
+                  Bytovia
+                </span>
+                <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                  Software Development & AI Solutions
+                </span>
                 </div>
               </Link>
               
@@ -183,10 +183,10 @@ export default function Footer() {
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Email</p>
                       <a 
-                        href="mailto:team@intelligentsystems.dev"
+                        href="mailto:team@bytovia.dev"
                         className="text-gray-300 hover:text-white transition-colors duration-300 text-xs break-all"
                       >
-                        team@intelligentsystems.dev
+                        team@bytovia.dev
                       </a>
                     </div>
                   </div>
@@ -239,7 +239,7 @@ export default function Footer() {
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-semibold text-white group-hover:text-blue-200 transition-colors duration-300">
-                  Intelligent Systems
+                  Bytovia
                 </span>
                 <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                   Software Development & AI Solutions
@@ -326,10 +326,10 @@ export default function Footer() {
                 <div>
                   <p className="text-xs text-gray-500 mb-1">Email</p>
                   <a 
-                    href="mailto:team@intelligentsystems.dev"
+                    href="mailto:team@bytovia.dev"
                     className="text-gray-300 hover:text-white transition-colors duration-300 text-sm"
                   >
-                    team@intelligentsystems.dev
+                    team@bytovia.dev
                   </a>
                 </div>
               </div>
@@ -365,7 +365,7 @@ export default function Footer() {
         >
           <div className="flex flex-col items-center justify-center gap-2 lg:gap-3 text-center">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 lg:gap-4 text-xs text-gray-500">
-              <span>&copy; {currentYear} Intelligent Systems. All rights reserved.</span>
+              <span>&copy; {currentYear} Bytovia. All rights reserved.</span>
               <div className="flex items-center gap-1">
                 <span>Made with</span>
                 <Heart className="w-3 h-3 text-red-400 animate-pulse" />

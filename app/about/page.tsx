@@ -267,7 +267,7 @@ export default function AboutPage() {
       description: "We maintain highest standards while ensuring solutions are built for long-term value and adaptability."
     },
     {
-      title: "Intelligent Systems",
+      title: "AI & Intelligent Systems",
       description: "Leveraging AI and machine learning to create intelligent systems that enhance business operations."
     }
   ], [])

@@ -117,7 +117,7 @@ export default function ContactPage() {
     {
       icon: <Mail className="w-5 h-5 text-blue-400" />,
       label: "EMAIL",
-      value: "team@intellisystems.dev",
+      value: "team@bytovia.dev",
       description: "Send us your project details",
     },
     {
