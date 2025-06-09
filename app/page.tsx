@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { ArrowRight, Code, Brain, Smartphone, Globe, Server, CheckCircle, Stars, Zap, Cpu, Shield, Rocket, ExternalLink, Github, Linkedin, Mail, Users, Clock, Target } from "lucide-react"
 import Link from "next/link"
 import { Suspense } from "react"
-import Footer from "@/components/footer"
+import { Footer } from "@/components/footer"
 import { InteractiveGlobe } from "@/components/hero"
 import { TestimonialsSection } from "@/components/testimonials"
 
@@ -32,6 +32,17 @@ const staggerContainer = {
       staggerChildren: 0.08,
     },
   },
+}
+
+// Helper function to convert service titles to URL slugs for homepage
+function getServiceSlugFromTitle(title: string): string {
+  const slugMap: { [key: string]: string } = {
+    'Custom Software Development': 'custom-software',
+    'AI & Intelligent Systems': 'ai-systems',
+    'Full-stack Web Development': 'web-development',
+    'Cloud & Infrastructure': 'cloud-infrastructure'
+  }
+  return slugMap[title] || title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 }
 
 export default function HomePage() {
@@ -250,9 +261,24 @@ export default function HomePage() {
                   <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4 group-hover:text-purple-300 transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors text-sm sm:text-base">
+                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors text-sm sm:text-base mb-4">
                     {service.description}
                   </p>
+                  
+                  {/* Get Started Button */}
+                  <div className="mt-auto">
+                    <Link href={`/services?service=${getServiceSlugFromTitle(service.title)}#calculator`}>
+                      <motion.button
+                        className={`w-full px-4 py-3 rounded-xl bg-gradient-to-r ${service.color} text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-current/25 group-hover:scale-105 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Rocket className="w-4 h-4" />
+                        Get Started
+                      </motion.button>
+                    </Link>
+                  </div>
+                  
                   <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
                   </div>

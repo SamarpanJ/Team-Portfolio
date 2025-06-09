@@ -80,6 +80,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     </motion.div>
   );
 };
+Navbar.displayName = 'Navbar';
 
 export const NavBody = ({ children, className, visible }: NavBodyProps) => {
   return (
@@ -107,6 +108,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
     </motion.div>
   );
 };
+NavBody.displayName = 'NavBody';
 
 export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -139,6 +141,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
     </motion.div>
   );
 };
+NavItems.displayName = 'NavItems';
 
 export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
   return (
@@ -174,6 +177,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
     </motion.div>
   );
 };
+MobileNav.displayName = 'MobileNav';
 
 export const MobileNavHeader = ({
   children,
@@ -190,6 +194,7 @@ export const MobileNavHeader = ({
     </div>
   );
 };
+MobileNavHeader.displayName = 'MobileNavHeader';
 
 export const MobileNavMenu = ({
   children,
@@ -216,6 +221,7 @@ export const MobileNavMenu = ({
     </AnimatePresence>
   );
 };
+MobileNavMenu.displayName = 'MobileNavMenu';
 
 export const MobileNavToggle = ({
   isOpen,
@@ -243,6 +249,7 @@ export const MobileNavToggle = ({
     </button>
   );
 };
+MobileNavToggle.displayName = 'MobileNavToggle';
 
 export const NavbarLogo = () => {
   return (
@@ -260,6 +267,7 @@ export const NavbarLogo = () => {
     </a>
   );
 };
+NavbarLogo.displayName = 'NavbarLogo';
 
 export const NavbarButton = ({
   href,
@@ -298,4 +306,5 @@ export const NavbarButton = ({
   }
 
   return React.createElement(Tag, combinedProps, children);
-}; 
+};
+NavbarButton.displayName = 'NavbarButton'; 

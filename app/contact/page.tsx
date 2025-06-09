@@ -5,7 +5,7 @@ import type React from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Mail, Github, Linkedin, Send, MapPin, Phone, Clock, MessageSquare, Calendar, Users, Zap, ChevronDown, Check, Terminal, Code, Globe, Smartphone, Brain, Cpu, Settings, Stars } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
-import Footer from "@/components/footer"
+import { Footer } from "@/components/footer"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },

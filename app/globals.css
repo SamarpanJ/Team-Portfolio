@@ -865,3 +865,83 @@ select:focus-visible {
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
 }
+
+/* Custom range slider */
+.slider {
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #334155;
+  border-radius: 4px;
+  border: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  cursor: pointer;
+  border: 2px solid #1e293b;
+  box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: linear-gradient(135deg, #0284c7, #0891b2);
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.7), 0 6px 16px rgba(0, 0, 0, 0.4);
+  transform: scale(1.1);
+}
+
+/* Custom scrollbar for premium modal */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(51, 65, 85, 0.3);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  border-radius: 4px;
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #0284c7, #0891b2);
+}
+
+.slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #334155;
+  border-radius: 4px;
+  border: none;
+}
+
+.slider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  cursor: pointer;
+  border: 2px solid #1e293b;
+  box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  background: linear-gradient(135deg, #0284c7, #0891b2);
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.7), 0 6px 16px rgba(0, 0, 0, 0.4);
+  transform: scale(1.1);
+}

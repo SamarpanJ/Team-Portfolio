@@ -1,36 +1,24 @@
 "use client"
 
-import React from "react"
+import React, { Suspense } from "react"
 import { motion } from "framer-motion"
+import { useSearchParams } from "next/navigation"
 import {
   Code,
   Brain,
   Database,
   Cloud,
-  Smartphone,
   Globe,
   Cpu,
-  Zap,
   ShoppingCart,
-  MessageSquare,
-  BarChart3,
-  Wifi,
   Settings,
   Palette,
   Server,
   Layers,
-  Box,
   Shield,
-  Monitor,
-  GitBranch,
-  Cog,
   ExternalLink,
-  Github,
-  Calendar,
   Users,
-  TrendingUp,
   CheckCircle2,
-  Play,
   Search,
   Rocket,
   Target,
@@ -40,16 +28,15 @@ import {
   Award,
   Workflow,
   Briefcase,
-  Building,
   Calculator,
   Plus,
-  Minus,
   DollarSign,
   Sparkles,
-  Zap as Lightning
+  Zap as Lightning,
+  Info
 } from "lucide-react"
 import Link from "next/link"
-import Footer from "@/components/footer"
+import { Footer } from "@/components/footer"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -66,299 +53,1088 @@ const staggerContainer = {
 }
 
 // Interactive Pricing Calculator Component
-function PricingCalculator() {
+const PricingCalculator = React.memo(() => {
+  const searchParams = useSearchParams()
   const [selectedServices, setSelectedServices] = React.useState<string[]>([])
   const [selectedAddOns, setSelectedAddOns] = React.useState<string[]>([])
   const [estimatedPrice, setEstimatedPrice] = React.useState(0)
   const [recommendedTier, setRecommendedTier] = React.useState('')
+  const [projectType, setProjectType] = React.useState<'website' | 'ai'>('website')
+  const [estimatedDays, setEstimatedDays] = React.useState(0)
+  const [selectedDays, setSelectedDays] = React.useState(0)
+  const [rushPrice, setRushPrice] = React.useState(0)
+  const [serviceAnswers, setServiceAnswers] = React.useState<{[key: string]: {[key: string]: string}}>({})
+  const isInitialLoad = React.useRef(true)
+
+  // Base hourly rates
+  const WEBSITE_RATE = 15
+  const AI_RATE = 20
+  const REGULAR_HOURS_PER_DAY = 6
+  const RUSH_HOURS_PER_DAY = 8
+
+  // Questionnaire data for intelligent complexity detection
+  const questionnaires = {
+    'web-app': {
+      title: 'Web Application Details',
+      icon: '🌐',
+      questions: [
+        {
+          id: 'users',
+          question: 'How many users will use your application?',
+          options: [
+            { value: 'small', label: 'Under 100 users', multiplier: 1.0 },
+            { value: 'medium', label: '100 - 1,000 users', multiplier: 1.4 },
+            { value: 'large', label: '1,000+ users', multiplier: 1.8 }
+          ]
+        },
+        {
+          id: 'features',
+          question: 'What type of functionality do you need?',
+          options: [
+            { value: 'basic', label: 'Simple website with forms', multiplier: 1.0 },
+            { value: 'interactive', label: 'User accounts, dashboards', multiplier: 1.3 },
+            { value: 'complex', label: 'Advanced workflows, integrations', multiplier: 1.7 }
+          ]
+        },
+        {
+          id: 'integrations',
+          question: 'Do you need third-party integrations?',
+          options: [
+            { value: 'none', label: 'No integrations needed', multiplier: 1.0 },
+            { value: 'few', label: '1-3 services (payments, email)', multiplier: 1.2 },
+            { value: 'many', label: '4+ services or complex APIs', multiplier: 1.5 }
+          ]
+        }
+      ]
+    },
+    'security': {
+      title: 'Security Requirements',
+      icon: '🔒',
+      questions: [
+        {
+          id: 'data_sensitivity',
+          question: 'What type of data will you handle?',
+          options: [
+            { value: 'basic', label: 'General business information', multiplier: 1.0 },
+            { value: 'personal', label: 'Customer personal data', multiplier: 1.3 },
+            { value: 'sensitive', label: 'Payment/Medical/Financial data', multiplier: 1.8 }
+          ]
+        },
+        {
+          id: 'compliance',
+          question: 'Do you need regulatory compliance?',
+          options: [
+            { value: 'none', label: 'No specific requirements', multiplier: 1.0 },
+            { value: 'basic', label: 'GDPR or basic compliance', multiplier: 1.4 },
+            { value: 'strict', label: 'HIPAA, PCI-DSS, or banking', multiplier: 2.0 }
+          ]
+        },
+        {
+          id: 'access_control',
+          question: 'How complex is your user access?',
+          options: [
+            { value: 'simple', label: 'Basic login system', multiplier: 1.0 },
+            { value: 'roles', label: 'Different user roles/permissions', multiplier: 1.3 },
+            { value: 'enterprise', label: 'Complex org structure, SSO', multiplier: 1.7 }
+          ]
+        }
+      ]
+    },
+    'ai-agents': {
+      title: 'AI Integration Scope',
+      icon: '🤖',
+      questions: [
+        {
+          id: 'ai_purpose',
+          question: 'What should the AI do for your business?',
+          options: [
+            { value: 'chatbot', label: 'Customer support chatbot', multiplier: 1.0 },
+            { value: 'analysis', label: 'Data analysis and insights', multiplier: 1.4 },
+            { value: 'automation', label: 'Complex workflow automation', multiplier: 1.8 }
+          ]
+        },
+        {
+          id: 'customization',
+          question: 'How customized should the AI be?',
+          options: [
+            { value: 'standard', label: 'Use existing AI models', multiplier: 1.0 },
+            { value: 'trained', label: 'Train on your specific data', multiplier: 1.5 },
+            { value: 'custom', label: 'Fully custom AI solution', multiplier: 2.2 }
+          ]
+        },
+        {
+          id: 'data_volume',
+          question: 'How much data will the AI process?',
+          options: [
+            { value: 'light', label: 'Small files, occasional use', multiplier: 1.0 },
+            { value: 'moderate', label: 'Regular processing, databases', multiplier: 1.3 },
+            { value: 'heavy', label: 'Real-time, large datasets', multiplier: 1.6 }
+          ]
+        }
+      ]
+    },
+    'database': {
+      title: 'Database Requirements',
+      icon: '💾',
+      questions: [
+        {
+          id: 'data_volume',
+          question: 'How much data will you be storing?',
+          options: [
+            { value: 'small', label: 'Small dataset (under 10GB)', multiplier: 1.0 },
+            { value: 'medium', label: 'Medium dataset (10GB - 1TB)', multiplier: 1.3 },
+            { value: 'large', label: 'Large dataset (1TB+)', multiplier: 1.7 }
+          ]
+        },
+        {
+          id: 'complexity',
+          question: 'How complex are your data relationships?',
+          options: [
+            { value: 'simple', label: 'Simple tables with basic relationships', multiplier: 1.0 },
+            { value: 'moderate', label: 'Multiple tables with foreign keys', multiplier: 1.2 },
+            { value: 'complex', label: 'Complex relationships and constraints', multiplier: 1.5 }
+          ]
+        },
+        {
+          id: 'performance',
+          question: 'What are your performance requirements?',
+          options: [
+            { value: 'standard', label: 'Standard performance is fine', multiplier: 1.0 },
+            { value: 'fast', label: 'Need fast queries and indexing', multiplier: 1.3 },
+            { value: 'realtime', label: 'Real-time performance critical', multiplier: 1.6 }
+          ]
+        }
+      ]
+    },
+    'ecommerce': {
+      title: 'E-commerce Complexity',
+      icon: '🛒',
+      questions: [
+        {
+          id: 'catalog_size',
+          question: 'How many products will you sell?',
+          options: [
+            { value: 'small', label: 'Under 100 products', multiplier: 1.0 },
+            { value: 'medium', label: '100 - 1,000 products', multiplier: 1.3 },
+            { value: 'large', label: '1,000+ products', multiplier: 1.7 }
+          ]
+        },
+        {
+          id: 'business_model',
+          question: 'What type of e-commerce business?',
+          options: [
+            { value: 'simple', label: 'Simple product sales', multiplier: 1.0 },
+            { value: 'marketplace', label: 'Multi-vendor marketplace', multiplier: 1.6 },
+            { value: 'subscription', label: 'Subscriptions or complex pricing', multiplier: 1.4 }
+          ]
+        },
+        {
+          id: 'operations',
+          question: 'What operational features do you need?',
+          options: [
+            { value: 'basic', label: 'Basic orders and payments', multiplier: 1.0 },
+            { value: 'inventory', label: 'Inventory management, shipping', multiplier: 1.3 },
+            { value: 'advanced', label: 'Warehouses, dropshipping, B2B', multiplier: 1.8 }
+          ]
+        }
+      ]
+    }
+  }
 
   const services = [
-    { id: 'web-app', name: 'Custom Web Application', basePrice: 3000, description: 'Full-stack web development' },
-    { id: 'ai-agents', name: 'AI Agents & ML Integration', basePrice: 4000, description: 'Custom AI solutions and LLM integration' },
-    { id: 'database', name: 'Database Design & Setup', basePrice: 1500, description: 'PostgreSQL, MongoDB, or vector databases' },
-    { id: 'cloud-hosting', name: 'Cloud Deployment & Hosting', basePrice: 2000, description: 'AWS, GCP, or Azure deployment' },
-    { id: 'ecommerce', name: 'E-commerce Platform', basePrice: 3500, description: 'Full e-commerce solution with payments' },
-    { id: 'api-development', name: 'API Development', basePrice: 2500, description: 'RESTful APIs and integrations' },
-    { id: 'real-time', name: 'Real-time Features', basePrice: 2000, description: 'WebSocket, live updates, notifications' },
-    { id: 'security', name: 'Security Implementation', basePrice: 1800, description: 'Authentication, authorization, encryption' },
-    { id: 'business-intelligence', name: 'Business Intelligence', basePrice: 3000, description: 'Analytics dashboards and reporting' },
-    { id: 'devops', name: 'DevOps & CI/CD', basePrice: 2200, description: 'Automated deployment and monitoring' }
+    { 
+      id: 'web-app', 
+      name: 'Custom Web Application', 
+      estimatedHours: 160, 
+      description: 'Full-stack web development with modern frameworks',
+      type: 'website' as const,
+      hasAssessment: true
+    },
+    { 
+      id: 'ai-agents', 
+      name: 'AI Agents & ML Integration', 
+      estimatedHours: 180, 
+      description: 'Custom AI solutions and LLM integration',
+      type: 'ai' as const,
+      hasAssessment: true
+    },
+    { 
+      id: 'database', 
+      name: 'Database Design & Setup', 
+      estimatedHours: 60, 
+      description: 'Database architecture and optimization',
+      type: 'website' as const,
+      hasAssessment: true
+    },
+    { 
+      id: 'cloud-hosting', 
+      name: 'Cloud Deployment & Hosting', 
+      estimatedHours: 40, 
+      description: 'Production deployment and infrastructure',
+      type: 'website' as const,
+      hasAssessment: false
+    },
+    { 
+      id: 'ecommerce', 
+      name: 'E-commerce Platform', 
+      estimatedHours: 220, 
+      description: 'Complete online store with payment integration',
+      type: 'website' as const,
+      hasAssessment: true
+    },
+    { 
+      id: 'api-development', 
+      name: 'API Development', 
+      estimatedHours: 100, 
+      description: 'RESTful APIs and third-party integrations',
+      type: 'website' as const,
+      hasAssessment: false
+    }
   ]
 
   const addOns = [
-    { id: 'extra-support', name: 'Extended Support (+3 months)', price: 1500 },
-    { id: 'extra-pages', name: 'Additional Pages (5+)', price: 1000 },
-    { id: 'sla', name: 'Premium SLA (99.9% uptime)', price: 2000 },
-    { id: 'custom-training', name: 'Custom AI Model Training', price: 3000 },
-    { id: 'mobile-app', name: 'Mobile App Development', price: 4000 },
-    { id: 'priority-support', name: '24/7 Priority Support', price: 1200 }
+    { id: 'real-time', name: 'Real-time Features', hours: 80, description: 'Live updates and notifications', type: 'website' as const },
+    { id: 'security', name: 'Security Implementation', hours: 60, description: 'Advanced security measures', type: 'website' as const, hasAssessment: true },
+    { id: 'analytics', name: 'Analytics Dashboard', hours: 70, description: 'Business intelligence tools', type: 'website' as const },
+    { id: 'mobile-responsive', name: 'Mobile Optimization', hours: 40, description: 'Mobile-first responsive design', type: 'website' as const },
+    { id: 'seo', name: 'SEO Optimization', hours: 30, description: 'Search engine optimization', type: 'website' as const },
+    { id: 'performance', name: 'Performance Optimization', hours: 50, description: 'Speed and efficiency improvements', type: 'website' as const }
   ]
 
-  React.useEffect(() => {
-    let total = selectedServices.reduce((sum, serviceId) => {
+  // Calculate complexity multiplier based on questionnaire answers
+  const getComplexityMultiplier = React.useCallback((serviceId: string): number => {
+    const answers = serviceAnswers[serviceId]
+    if (!answers) return 1.0
+
+    const questionnaire = questionnaires[serviceId as keyof typeof questionnaires]
+    if (!questionnaire) return 1.0
+
+    let totalMultiplier = 1.0
+    questionnaire.questions.forEach(question => {
+      const answer = answers[question.id]
+      if (answer) {
+        const option = question.options.find(opt => opt.value === answer)
+        if (option) {
+          totalMultiplier *= option.multiplier
+        }
+      }
+    })
+
+    return totalMultiplier
+  }, [serviceAnswers])
+
+  // Calculate pricing based on hourly rates and project type
+  const calculatePricing = React.useCallback(() => {
+    let totalHours = 0
+    let hasWebsiteComponents = false
+    let hasAiComponents = false
+
+    // Calculate hours from selected services with complexity multipliers
+    selectedServices.forEach(serviceId => {
       const service = services.find(s => s.id === serviceId)
-      return sum + (service?.basePrice || 0)
-    }, 0)
+      if (service) {
+        const complexityMultiplier = getComplexityMultiplier(serviceId)
+        const adjustedHours = service.estimatedHours * complexityMultiplier
+        totalHours += adjustedHours
+        if (service.type === 'website') hasWebsiteComponents = true
+        if (service.type === 'ai') hasAiComponents = true
+      }
+    })
 
-    total += selectedAddOns.reduce((sum, addOnId) => {
+    // Calculate hours from selected add-ons
+    selectedAddOns.forEach(addOnId => {
       const addOn = addOns.find(a => a.id === addOnId)
-      return sum + (addOn?.price || 0)
-    }, 0)
+      if (addOn) {
+        totalHours += addOn.hours
+        // All current add-ons are website type
+        hasWebsiteComponents = true
+      }
+    })
 
-    setEstimatedPrice(total)
+    // Determine project type based on selected services
+    let currentProjectType: 'website' | 'ai' = 'website'
+    if (hasAiComponents && !hasWebsiteComponents) {
+      currentProjectType = 'ai'
+    } else if (hasAiComponents && hasWebsiteComponents) {
+      // Mixed project - use AI rate for the entire project
+      currentProjectType = 'ai'
+    }
+
+    setProjectType(currentProjectType)
+
+    // Calculate base price
+    const hourlyRate = currentProjectType === 'ai' ? AI_RATE : WEBSITE_RATE
+    const basePrice = totalHours * hourlyRate
+
+    // Calculate estimated days (based on 6 hours per day)
+    const estimatedDaysValue = Math.ceil(totalHours / REGULAR_HOURS_PER_DAY)
+    setEstimatedDays(estimatedDaysValue)
+    
+    // Set selected days to estimated days by default if not set or exceeds estimated
+    if (selectedDays === 0 || selectedDays > estimatedDaysValue) {
+      setSelectedDays(estimatedDaysValue)
+    }
+
+    setEstimatedPrice(basePrice)
+
+    // Calculate rush pricing if timeline is reduced
+    let rushPricing = 0
+    if (selectedDays < estimatedDaysValue && estimatedDaysValue > 0) {
+      const reductionPercentage = ((estimatedDaysValue - selectedDays) / estimatedDaysValue) * 100
+      
+      // Cap at 30% reduction
+      const cappedReduction = Math.min(reductionPercentage, 30)
+      
+      // Calculate additional cost per hour (every 10% reduction = +$1/hour)
+      const additionalCostPerHour = Math.floor(cappedReduction / 10) * 1
+      
+      // Total additional cost for 8 hours per day for the reduced timeline
+      const additionalHours = selectedDays * RUSH_HOURS_PER_DAY
+      rushPricing = additionalHours * additionalCostPerHour
+    }
+
+    setRushPrice(rushPricing)
+
+    // Calculate total with rush pricing
+    const totalPrice = basePrice + rushPricing
 
     // Recommend tier based on total price
-    if (total < 5000) {
+    if (totalPrice < 3000) {
       setRecommendedTier('Starter Package')
-    } else if (total < 12000) {
+    } else if (totalPrice < 8000) {
       setRecommendedTier('Professional Package')
     } else {
       setRecommendedTier('Enterprise Package')
     }
-  }, [selectedServices, selectedAddOns])
 
-  const toggleService = (serviceId: string) => {
+    return totalPrice
+  }, [selectedServices, selectedAddOns, selectedDays, getComplexityMultiplier])
+
+  // Helper function to handle parameter-based selection
+  const handleParameterSelection = React.useCallback((serviceParam: string | null, packageParam: string | null) => {
+    // Clear existing selections first
+    setSelectedServices([])
+    setSelectedAddOns([])
+    
+    // Small delay to ensure state is cleared before setting new values
+    const timer = setTimeout(() => {
+      let servicesToSelect: string[] = []
+      
+      if (serviceParam) {
+        // Map service types to calculator service IDs
+        const serviceMapping: { [key: string]: string[] } = {
+          'web-development': ['web-app'],
+          'ai-systems': ['ai-agents'],
+          'database': ['database'],
+          'cloud-infrastructure': ['cloud-hosting'],
+          'ecommerce': ['ecommerce'],
+          'custom-software': ['web-app', 'api-development']
+        }
+        servicesToSelect = serviceMapping[serviceParam] || []
+      }
+      
+      if (packageParam) {
+        // Map package types to calculator service combinations
+        const packageMapping: { [key: string]: string[] } = {
+          'starter': ['web-app', 'database'],
+          'professional': ['web-app', 'ai-agents', 'cloud-hosting', 'security'],
+          'enterprise': ['web-app', 'ai-agents', 'cloud-hosting', 'security', 'business-intelligence', 'devops'],
+          'consultation': [] // No services pre-selected for consultation
+        }
+        servicesToSelect = packageMapping[packageParam] || []
+      }
+      
+      // Set services after clearing
+      if (servicesToSelect.length > 0) {
+        setSelectedServices(servicesToSelect)
+      }
+      
+      // Scroll to calculator section
+      const calculatorElement = document.getElementById('calculator')
+      if (calculatorElement) {
+        calculatorElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }, 50)
+    
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Handle URL parameters and detect page refresh
+  React.useEffect(() => {
+    const serviceParam = searchParams.get('service')
+    const packageParam = searchParams.get('package')
+    
+    // Detect if this is a page refresh using Performance API
+    const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
+    const isPageRefresh = navigationEntry?.type === 'reload'
+    
+    // If it's initial load, check for refresh and clear parameters
+    if (isInitialLoad.current) {
+      if (isPageRefresh && (serviceParam || packageParam)) {
+        // Clear URL parameters on refresh and scroll to top
+        const url = new URL(window.location.href)
+        url.searchParams.delete('service')
+        url.searchParams.delete('package')
+        url.hash = ''
+        window.history.replaceState({}, '', url.toString())
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'auto' })
+        
+        // Clear selections
+        setSelectedServices([])
+        setSelectedAddOns([])
+      } else if (!isPageRefresh && (serviceParam || packageParam)) {
+        // Handle normal navigation with parameters
+        handleParameterSelection(serviceParam, packageParam)
+      }
+      
+      isInitialLoad.current = false
+    } else if (serviceParam || packageParam) {
+      // Handle subsequent parameter changes (navigation between services)
+      handleParameterSelection(serviceParam, packageParam)
+    }
+  }, [searchParams, handleParameterSelection])
+
+  // Recalculate pricing when selections change
+  React.useEffect(() => {
+    calculatePricing()
+  }, [calculatePricing])
+
+  const toggleService = React.useCallback((serviceId: string) => {
     setSelectedServices(prev => 
       prev.includes(serviceId) 
         ? prev.filter(id => id !== serviceId)
         : [...prev, serviceId]
     )
-  }
+  }, [])
 
-  const toggleAddOn = (addOnId: string) => {
+  const toggleAddOn = React.useCallback((addOnId: string) => {
     setSelectedAddOns(prev => 
       prev.includes(addOnId)
         ? prev.filter(id => id !== addOnId)
         : [...prev, addOnId]
     )
-  }
+  }, [])
 
-  const getTierColor = (tier: string) => {
+  const getTierColor = React.useCallback((tier: string) => {
     switch (tier) {
       case 'Starter Package': return 'text-emerald-400'
       case 'Professional Package': return 'text-purple-400'
       case 'Enterprise Package': return 'text-blue-400'
       default: return 'text-gray-400'
     }
-  }
+  }, [])
 
-  const getTierGradient = (tier: string) => {
+  const getTierGradient = React.useCallback((tier: string) => {
     switch (tier) {
       case 'Starter Package': return 'from-emerald-500/20 to-emerald-600/20'
       case 'Professional Package': return 'from-purple-500/20 to-pink-500/20'
       case 'Enterprise Package': return 'from-blue-500/20 to-cyan-500/20'
       default: return 'from-gray-500/20 to-gray-600/20'
     }
-  }
+  }, [])
 
-  return (
-    <div className="grid lg:grid-cols-3 gap-8">
-      {/* Services Selection */}
-      <div className="lg:col-span-2 space-y-6">
-        <div>
-          <h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <Settings className="w-5 h-5 text-cyan-400" />
-            Select Your Required Services
-          </h4>
-          <div className="grid md:grid-cols-2 gap-4">
-            {services.map((service) => (
+  const totalEstimatedPrice = estimatedPrice + rushPrice
+  const minDays = React.useMemo(() => Math.ceil(estimatedDays * 0.7), [estimatedDays]) // 70% of estimated time
+
+  const handleTimelineChange = React.useCallback((newDays: number) => {
+    if (newDays >= minDays && newDays <= estimatedDays) {
+      setSelectedDays(newDays)
+    }
+  }, [minDays, estimatedDays])
+
+
+
+
+
+      return (
+    <>
+      <div className="max-w-5xl mx-auto space-y-12">
+        {/* Enhanced Pricing Header */}
+        <div className="text-center">
+          <motion.div 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/15 via-blue-500/15 to-purple-500/15 border border-emerald-400/30 mb-6 shadow-lg shadow-emerald-500/10"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <DollarSign className="w-4 h-4 text-emerald-400" />
+            <span className="text-sm text-emerald-300 font-medium uppercase tracking-wider">Our Pricing Structure</span>
+          </motion.div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-gradient-to-r from-slate-900/80 to-slate-800/70 backdrop-blur-xl border border-slate-600/40 p-4 rounded-xl text-center shadow-lg shadow-slate-900/30 hover:shadow-xl hover:shadow-emerald-500/20 transition-all duration-300">
+              <div className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">${WEBSITE_RATE}</div>
+              <div className="text-sm text-gray-300">Website Development</div>
+              <div className="text-xs text-gray-500">per hour</div>
+            </div>
+            <div className="bg-gradient-to-r from-slate-900/80 to-slate-800/70 backdrop-blur-xl border border-slate-600/40 p-4 rounded-xl text-center shadow-lg shadow-slate-900/30 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300">
+              <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">${AI_RATE}</div>
+              <div className="text-sm text-gray-300">AI Projects</div>
+              <div className="text-xs text-gray-500">per hour</div>
+            </div>
+            <div className="bg-gradient-to-r from-slate-900/80 to-slate-800/70 backdrop-blur-xl border border-slate-600/40 p-4 rounded-xl text-center shadow-lg shadow-slate-900/30 hover:shadow-xl hover:shadow-cyan-500/20 transition-all duration-300">
+              <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">{REGULAR_HOURS_PER_DAY}</div>
+              <div className="text-sm text-gray-300">Regular Schedule</div>
+              <div className="text-xs text-gray-500">hours/day</div>
+            </div>
+            <div className="bg-gradient-to-r from-slate-900/80 to-slate-800/70 backdrop-blur-xl border border-slate-600/40 p-4 rounded-xl text-center shadow-lg shadow-slate-900/30 hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300">
+              <div className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">{RUSH_HOURS_PER_DAY}</div>
+              <div className="text-sm text-gray-300">Rush Projects</div>
+              <div className="text-xs text-gray-500">hours/day</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8 items-start">
+          {/* Services Selection */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Core Services */}
+            <div>
               <motion.div
-                key={service.id}
-                className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
-                  selectedServices.includes(service.id)
-                    ? 'border-cyan-400/50 bg-cyan-500/10'
-                    : 'border-slate-600/30 bg-slate-800/20 hover:border-slate-500/50'
-                }`}
-                onClick={() => toggleService(service.id)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-3 mb-6"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
               >
-                <div className="flex items-start gap-3">
-                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 transition-colors ${
-                    selectedServices.includes(service.id)
-                      ? 'border-cyan-400 bg-cyan-400'
-                      : 'border-slate-500'
-                  }`}>
-                    {selectedServices.includes(service.id) && (
-                      <CheckCircle2 className="w-3 h-3 text-white" />
+                <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500/20 via-cyan-400/20 to-purple-500/20 border border-blue-400/30">
+                  <Settings className="w-5 h-5 text-blue-400" />
+                </div>
+                <h4 className="text-xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">Select Your Required Services</h4>
+              </motion.div>
+              
+              <motion.div
+                className="grid gap-4"
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+              >
+                {services.map((service, index) => {
+                  const complexityMultiplier = getComplexityMultiplier(service.id)
+                  const adjustedHours = service.estimatedHours * complexityMultiplier
+                  const servicePrice = adjustedHours * (service.type === 'ai' ? AI_RATE : WEBSITE_RATE)
+                  const isSelected = selectedServices.includes(service.id)
+                  
+                  return (
+                    <motion.div
+                      key={service.id}
+                      className={`relative group ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-blue-500/10 via-cyan-400/10 to-purple-500/10 border-blue-400/50 shadow-lg shadow-blue-500/20'
+                          : 'bg-gradient-to-r from-slate-900/80 to-slate-800/60 hover:from-slate-800/90 hover:to-slate-700/70 border-slate-600/50 hover:border-slate-500/60'
+                      } border backdrop-blur-xl rounded-2xl p-6 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-slate-900/30`}
+                      variants={fadeInUp}
+                      whileHover={{ y: -2, scale: 1.005 }}
+                      onClick={() => toggleService(service.id)}
+                    >
+                      {/* Premium glow effect for selected items */}
+                      {isSelected && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-cyan-400/5 to-purple-500/5 rounded-2xl blur-xl"></div>
+                      )}
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-start gap-4">
+                          {/* Enhanced Custom Checkbox */}
+                          <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center mt-0.5 transition-all duration-300 ${
+                            isSelected
+                              ? 'border-blue-400 bg-gradient-to-r from-blue-500 to-cyan-500 shadow-lg shadow-blue-400/30'
+                              : 'border-slate-400 group-hover:border-slate-300 bg-slate-800/50'
+                          }`}>
+                            {isSelected && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                <CheckCircle2 className="w-4 h-4 text-white" />
+                              </motion.div>
+                            )}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h5 className="text-lg font-semibold text-white group-hover:text-blue-300 transition-colors">{service.name}</h5>
+                              <span className={`text-xs px-3 py-1 rounded-full font-medium border ${
+                                service.type === 'ai' 
+                                  ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30' 
+                                  : 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30'
+                              }`}>
+                                {service.type === 'ai' ? 'AI' : 'Web'}
+                              </span>
+                            </div>
+                            
+                            <p className="text-gray-300 mb-4 leading-relaxed">{service.description}</p>
+                            
+                            <div className="flex justify-between items-center">
+                              <div className="space-y-1">
+                                <div className="text-gray-300 text-sm">
+                                  {Math.round(adjustedHours)} hours
+                                  {complexityMultiplier !== 1.0 && (
+                                    <span className="text-amber-400 ml-1 font-medium">
+                                      ({complexityMultiplier.toFixed(1)}x complexity)
+                                    </span>
+                                  )}
+                                </div>
+                                {complexityMultiplier !== 1.0 && (
+                                  <div className="text-xs text-gray-500">
+                                    Base: {service.estimatedHours} hours
+                                  </div>
+                                )}
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                                  ${servicePrice.toLocaleString()}
+                                </div>
+                                {complexityMultiplier !== 1.0 && (
+                                  <div className="text-xs text-gray-500 line-through">
+                                    ${(service.estimatedHours * (service.type === 'ai' ? AI_RATE : WEBSITE_RATE)).toLocaleString()}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
+            </div>
+
+            {/* Enhanced Add-ons */}
+            <div>
+              <motion.div
+                className="flex items-center gap-3 mb-6"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                viewport={{ once: true }}
+              >
+                <div className="p-2 rounded-lg bg-gradient-to-r from-amber-500/20 via-orange-400/20 to-yellow-500/20 border border-amber-400/30">
+                  <Plus className="w-5 h-5 text-amber-400" />
+                </div>
+                <h4 className="text-xl font-bold bg-gradient-to-r from-white to-amber-100 bg-clip-text text-transparent">Optional Add-ons</h4>
+              </motion.div>
+              
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+              >
+                {addOns.map((addOn) => {
+                  const addOnPrice = addOn.hours * WEBSITE_RATE
+                  const isSelected = selectedAddOns.includes(addOn.id)
+                  
+                  return (
+                    <motion.div
+                      key={addOn.id}
+                      className={`relative group ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-amber-500/10 via-orange-400/10 to-yellow-500/10 border-amber-400/50 shadow-lg shadow-amber-500/20'
+                          : 'bg-gradient-to-r from-slate-900/80 to-slate-800/60 hover:from-slate-800/90 hover:to-slate-700/70 border-slate-600/50 hover:border-slate-500/60'
+                      } border backdrop-blur-xl rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-slate-900/30`}
+                      variants={fadeInUp}
+                      whileHover={{ y: -2, scale: 1.005 }}
+                      onClick={() => toggleAddOn(addOn.id)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-300 ${
+                          isSelected
+                            ? 'border-amber-400 bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-amber-400/30'
+                            : 'border-slate-400 group-hover:border-slate-300 bg-slate-800/50'
+                        }`}>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <CheckCircle2 className="w-3 h-3 text-white" />
+                            </motion.div>
+                          )}
+                        </div>
+                        
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-white group-hover:text-amber-300 transition-colors">{addOn.name}</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border border-blue-400/30">
+                                Web
+                              </span>
+                            </div>
+                            <div className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent font-bold">
+                              ${addOnPrice.toLocaleString()}
+                            </div>
+                          </div>
+                          <div className="text-sm text-gray-300 mb-1">{addOn.description}</div>
+                          <div className="text-xs text-gray-500">{addOn.hours} hours</div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Premium Enhanced Price Summary Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8">
+              {/* Matching header for alignment */}
+              <motion.div
+                className="flex items-center gap-3 mb-6"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <div className="p-2 rounded-lg bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-cyan-500/20 border border-emerald-400/30">
+                  <DollarSign className="w-5 h-5 text-emerald-400" />
+                </div>
+                <h4 className="text-xl font-bold bg-gradient-to-r from-white to-emerald-100 bg-clip-text text-transparent">Project Estimate</h4>
+              </motion.div>
+
+              {/* Main Total Cost Card - Enhanced */}
+              <motion.div
+                className={`relative overflow-hidden border backdrop-blur-xl rounded-3xl p-8 ${
+                  totalEstimatedPrice > 0 
+                    ? `bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 border-blue-400/40 shadow-2xl shadow-blue-500/20`
+                    : 'bg-gradient-to-br from-slate-900/80 to-slate-800/70 border-slate-600/40'
+                }`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                {/* Enhanced Background gradient effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-cyan-400/5 to-purple-500/5"></div>
+                
+                <div className="relative z-10">
+                  {/* Enhanced Header */}
+                  <div className="text-center mb-8">
+                    <motion.div 
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/15 via-blue-500/15 to-cyan-500/15 border border-emerald-400/30 mb-4 shadow-lg shadow-emerald-500/10"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <DollarSign className="w-4 h-4 text-emerald-400" />
+                      <span className="text-xs text-emerald-300 font-medium uppercase tracking-wider">Total Cost</span>
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-cyan-200 bg-clip-text text-transparent mb-2"
+                      key={totalEstimatedPrice}
+                      initial={{ scale: 1.1, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.4, type: "spring" }}
+                    >
+                      ${totalEstimatedPrice.toLocaleString()}
+                    </motion.div>
+                    
+                    {totalEstimatedPrice > 0 && (
+                      <motion.div 
+                        className="text-sm text-gray-300"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        Final cost may vary based on complexity
+                      </motion.div>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <h5 className="font-semibold text-white mb-1">{service.name}</h5>
-                    <p className="text-sm text-gray-400 mb-2">{service.description}</p>
-                    <div className="text-cyan-400 font-medium text-sm">
-                      +${service.basePrice.toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
 
-        {/* Add-ons Selection */}
-        <div>
-          <h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <Plus className="w-5 h-5 text-amber-400" />
-            Optional Add-ons
-          </h4>
-          <div className="grid md:grid-cols-2 gap-4">
-            {addOns.map((addOn) => (
-              <motion.div
-                key={addOn.id}
-                className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
-                  selectedAddOns.includes(addOn.id)
-                    ? 'border-amber-400/50 bg-amber-500/10'
-                    : 'border-slate-600/30 bg-slate-800/20 hover:border-slate-500/50'
-                }`}
-                onClick={() => toggleAddOn(addOn.id)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                      selectedAddOns.includes(addOn.id)
-                        ? 'border-amber-400 bg-amber-400'
-                        : 'border-slate-500'
-                    }`}>
-                      {selectedAddOns.includes(addOn.id) && (
-                        <CheckCircle2 className="w-3 h-3 text-white" />
+                  {/* Enhanced Price Breakdown */}
+                  {estimatedPrice > 0 && (
+                    <motion.div 
+                      className="space-y-3 mb-6 p-4 bg-gradient-to-r from-slate-800/60 to-slate-700/40 rounded-xl border border-slate-600/40 backdrop-blur-sm"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-300">Base Price:</span>
+                        <span className="text-white font-medium">${estimatedPrice.toLocaleString()}</span>
+                      </div>
+                      {rushPrice > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-300">Rush Surcharge:</span>
+                          <span className="text-orange-400 font-medium">+${rushPrice.toLocaleString()}</span>
+                        </div>
                       )}
+                      <div className="border-t border-slate-600/40 pt-2">
+                        <div className="flex justify-between">
+                          <span className="text-gray-300 font-medium">Project Type:</span>
+                          <span className={`font-semibold ${projectType === 'ai' ? 'text-purple-400' : 'bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent'}`}>
+                            {projectType === 'ai' ? 'AI Project' : 'Website Project'}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Enhanced Timeline Slider */}
+                  {estimatedDays > 0 && (
+                    <motion.div 
+                      className="mb-6 p-4 bg-gradient-to-r from-slate-800/60 to-slate-700/40 rounded-xl border border-slate-600/40 backdrop-blur-sm"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <div className="flex items-center gap-2 mb-4">
+                        <Clock className="w-4 h-4 text-orange-400" />
+                        <span className="text-sm font-medium bg-gradient-to-r from-white to-orange-200 bg-clip-text text-transparent">Project Timeline</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="text-center">
+                          <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-1">{estimatedDays}</div>
+                          <div className="text-xs text-gray-400">Estimated</div>
+                        </div>
+                        <div className="text-center">
+                          <div className={`text-xl font-bold mb-1 ${
+                            selectedDays < estimatedDays 
+                              ? 'bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent' 
+                              : 'bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent'
+                          }`}>
+                            {selectedDays}
+                          </div>
+                          <div className="text-xs text-gray-400">Selected</div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <input
+                          type="range"
+                          min={minDays}
+                          max={estimatedDays}
+                          value={selectedDays}
+                          onChange={(e) => handleTimelineChange(parseInt(e.target.value))}
+                          className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                          style={{
+                            background: `linear-gradient(to right, #f97316 0%, #f97316 ${((selectedDays - minDays) / Math.max(estimatedDays - minDays, 1)) * 100}%, #374151 ${((selectedDays - minDays) / Math.max(estimatedDays - minDays, 1)) * 100}%, #374151 100%)`
+                          }}
+                        />
+                        <div className="flex justify-between text-xs text-gray-500">
+                          <span>Min: {minDays} days</span>
+                          <span>Max: {estimatedDays} days</span>
+                        </div>
+                      </div>
+
+                      {selectedDays < estimatedDays && (
+                        <motion.div
+                          className="mt-4 pt-4 border-t border-slate-600/40"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className="bg-gradient-to-r from-orange-500/15 to-red-500/15 border border-orange-400/30 rounded-lg p-3">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Lightning className="w-3 h-3 text-orange-400" />
+                              <span className="text-xs text-orange-400 font-medium">Rush Project</span>
+                            </div>
+                            <div className="text-xs text-gray-300 space-y-1">
+                              <div className="flex justify-between">
+                                <span>Time Reduction:</span>
+                                <span className="text-orange-400">{Math.round(((estimatedDays - selectedDays) / estimatedDays) * 100)}%</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Daily Hours:</span>
+                                <span className="text-orange-400">{RUSH_HOURS_PER_DAY} hrs/day</span>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {/* Enhanced Recommended Tier */}
+                  {recommendedTier && totalEstimatedPrice > 0 && (
+                    <motion.div 
+                      className="text-center mb-6 p-4 bg-gradient-to-r from-yellow-500/15 to-amber-500/15 border border-yellow-400/30 rounded-xl shadow-lg shadow-yellow-500/10"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <Sparkles className="w-4 h-4 text-yellow-400" />
+                        <span className="text-xs text-yellow-300 font-medium uppercase tracking-wider">Recommended Package</span>
+                      </div>
+                      <div className={`text-lg font-bold ${getTierColor(recommendedTier)}`}>
+                        {recommendedTier}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Enhanced Project Summary */}
+                  <motion.div 
+                    className="space-y-4 mb-8"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Selected Services:</span>
+                      <span className="text-white font-semibold">{selectedServices.length}</span>
                     </div>
-                    <span className="font-medium text-white">{addOn.name}</span>
-                  </div>
-                  <div className="text-amber-400 font-medium text-sm">
-                    +${addOn.price.toLocaleString()}
-                  </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Add-ons:</span>
+                      <span className="text-white font-semibold">{selectedAddOns.length}</span>
+                    </div>
+                    {estimatedDays > 0 && (
+                      <>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-300">Timeline:</span>
+                          <span className="text-white font-semibold">{selectedDays} days</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-300">Daily Hours:</span>
+                          <span className="text-white font-semibold">{selectedDays < estimatedDays ? RUSH_HOURS_PER_DAY : REGULAR_HOURS_PER_DAY} hours</span>
+                        </div>
+                      </>
+                    )}
+                  </motion.div>
+
+                  {/* Enhanced CTA Button */}
+                  {totalEstimatedPrice > 0 ? (
+                    <motion.button
+                      className="w-full py-4 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 text-white font-semibold rounded-xl transition-all duration-300 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700 hover:shadow-xl hover:shadow-blue-500/30 flex items-center justify-center gap-3 text-lg transform hover:scale-[1.02]"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <Rocket className="w-5 h-5" />
+                      Get Detailed Quote
+                    </motion.button>
+                  ) : (
+                    <motion.div 
+                      className="text-center p-8 text-gray-500"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <Settings className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                      <div className="text-sm">Select services above to see your estimate</div>
+                    </motion.div>
+                  )}
                 </div>
               </motion.div>
-            ))}
+
+              {/* Enhanced Additional Information Card */}
+              {totalEstimatedPrice > 0 && (
+                <motion.div
+                  className="bg-gradient-to-r from-slate-900/80 to-slate-800/70 backdrop-blur-xl border border-slate-600/40 rounded-2xl p-6 shadow-lg shadow-slate-900/30 mt-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                >
+                  <h5 className="text-lg font-semibold bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent mb-4 flex items-center gap-2">
+                    <Info className="w-4 h-4 text-cyan-400" />
+                    What's Included
+                  </h5>
+                  <div className="space-y-3 text-sm text-gray-300">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                      <span>Complete source code delivery</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                      <span>Technical documentation</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                      <span>Deployment assistance</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                      <span>30-day support period</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                      <span>Code review & optimization</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Price Estimate & Recommendation */}
-      <div className="lg:col-span-1">
-        <div className="sticky top-8">
-          <motion.div
-            className={`p-6 rounded-2xl border bg-gradient-to-br ${getTierGradient(recommendedTier)} backdrop-blur-sm`}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="text-center mb-6">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <DollarSign className="w-5 h-5 text-green-400" />
-                <span className="text-sm text-gray-400 uppercase tracking-wider">Estimated Cost</span>
-              </div>
-              <motion.div 
-                className="text-4xl font-bold text-white mb-2"
-                key={estimatedPrice}
-                initial={{ scale: 1.1 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                ${estimatedPrice.toLocaleString()}
-              </motion.div>
-              {estimatedPrice > 0 && (
-                <div className="text-sm text-gray-500">
-                  Final cost may vary based on complexity
-                </div>
-              )}
-            </div>
-
-            {recommendedTier && estimatedPrice > 0 && (
-              <div className="text-center mb-6">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <Sparkles className="w-4 h-4 text-yellow-400" />
-                  <span className="text-xs text-gray-400 uppercase tracking-wider">Recommended Tier</span>
-                </div>
-                <div className={`text-lg font-bold ${getTierColor(recommendedTier)}`}>
-                  {recommendedTier}
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-3 mb-6">
-              <div className="text-sm text-gray-400">
-                <strong>Selected Services:</strong> {selectedServices.length}
-              </div>
-              <div className="text-sm text-gray-400">
-                <strong>Add-ons:</strong> {selectedAddOns.length}
-              </div>
-              {selectedServices.length > 0 && (
-                <div className="text-sm text-gray-400">
-                  <strong>Estimated Timeline:</strong> {
-                    estimatedPrice < 5000 ? '2-4 weeks' :
-                    estimatedPrice < 12000 ? '6-12 weeks' : '12-24 weeks'
-                  }
-                </div>
-              )}
-            </div>
-
-            {estimatedPrice > 0 && (
-              <motion.button
-                className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl transition-all duration-300 hover:from-cyan-600 hover:to-blue-600 flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Get Detailed Quote
-                <Lightning className="w-4 h-4" />
-              </motion.button>
-            )}
-
-            {estimatedPrice === 0 && (
-              <div className="text-center text-gray-500 text-sm">
-                Select services above to see your estimate
-              </div>
-            )}
-          </motion.div>
-        </div>
-      </div>
-    </div>
+    </>
   )
+})
+PricingCalculator.displayName = 'PricingCalculator'
+
+// Helper function to convert service titles to URL slugs
+function getServiceSlug(title: string): string {
+  const slugMap: { [key: string]: string } = {
+    'Custom Software Development': 'custom-software',
+    'AI & Intelligent Systems': 'ai-systems',
+    'Full-stack Web Development': 'web-development',
+    'Database Solutions': 'database',
+    'Cloud & Infrastructure': 'cloud-infrastructure',
+    'E-commerce Platforms': 'ecommerce'
+  }
+  return slugMap[title] || title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 }
 
-export default function ServicesPage() {
+// Helper function to convert package names to URL slugs
+function getPackageSlug(name: string): string {
+  const slugMap: { [key: string]: string } = {
+    'Expert Consultation': 'consultation',
+    'Starter Package': 'starter',
+    'Professional Package': 'professional',
+    'Enterprise Package': 'enterprise'
+  }
+  return slugMap[name] || name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+}
+
+// Main Services Page Content Component  
+function ServicesPageContent() {
+  
   const coreServices = [
     {
       title: "Custom Software Development",
-      description: "MERN/PERN stack applications, Django, Flask, FastAPI backends tailored to your specific business requirements",
+      description: "Tailored software solutions designed to meet your specific business requirements and operational needs",
       icon: <Code className="w-8 h-8" />,
       features: [
-        "Full-stack web applications (MERN/PERN)",
-        "API development with Express.js/FastAPI",
-        "Database optimization (PostgreSQL, MongoDB, Firebase, Supabase, Pinecone)",
+        "Full-stack web applications",
+        "Custom API development",
+        "Database optimization",
         "Modern framework implementation",
-        "Real-time features with Socket.IO"
+        "Real-time communication features"
       ],
       color: "from-blue-500 to-cyan-500",
       deliverables: ["Source Code", "Documentation", "Deployment Guide"]
     },
     {
       title: "AI & Intelligent Systems",
-      description: "AI agents and intelligent systems integrating with LLMs, implementing RAG systems using TensorFlow, PyTorch, Hugging Face",
+      description: "Advanced AI solutions and intelligent systems to automate processes and enhance decision-making capabilities",
       icon: <Brain className="w-8 h-8" />,
       features: [
         "Custom AI agents and assistants",
-        "LLM integration and implementation",
-        "RAG system development",
+        "Machine learning model integration",
+        "Intelligent automation systems",
         "Conversational AI solutions",
-        "Intelligent workflow automation"
+        "Predictive analytics implementation"
       ],
       color: "from-purple-500 to-pink-500",
-      deliverables: ["AI Agents", "LLM Integrations", "RAG Systems"]
+      deliverables: ["AI Agents", "ML Models", "Analytics Dashboard"]
     },
     {
       title: "Full-stack Web Development",
-      description: "MERN/PERN stacks, Next.js, React Native with modern UI using Three.js for interactive experiences",
+      description: "Complete web applications with modern UI design and interactive experiences using Three.js and WebGL",
       icon: <Globe className="w-8 h-8" />,
       features: [
-        "Full-stack web applications (MERN/PERN)",
-        "Next.js and React.js development",
+        "Full-stack web applications",
+        "Modern responsive design",
         "Interactive experiences with Three.js/WebGL",
-        "Responsive and modern UI design",
+        "Progressive web applications",
         "Performance optimization"
       ],
       color: "from-green-500 to-emerald-500",
@@ -366,46 +1142,46 @@ export default function ServicesPage() {
     },
     {
       title: "Database Solutions",
-      description: "Comprehensive database design, optimization, and management using PostgreSQL, MongoDB, Firebase, Supabase, and Pinecone for vector data",
+      description: "Comprehensive database design and optimization for efficient data management and storage solutions",
       icon: <Database className="w-8 h-8" />,
       features: [
-        "PostgreSQL (Relational database design & optimization)",
-        "MongoDB (NoSQL document database solutions)",
-        "Firebase (Realtime NoSQL with live sync)",
-        "Supabase (PostgreSQL-based Backend-as-a-Service)",
-        "Pinecone (Vector database for AI/ML applications)"
+        "Relational database design",
+        "NoSQL document databases",
+        "Real-time data synchronization",
+        "Database performance optimization",
+        "Vector databases for AI applications"
       ],
       color: "from-cyan-500 to-blue-500",
       deliverables: ["Database Schema", "Query Optimization", "Data Migration"]
     },
     {
       title: "Cloud & Infrastructure",
-      description: "AWS, Google Cloud, Vercel deployments with Docker, serverless architectures, and microservices",
+      description: "Scalable cloud deployments with containerization and modern infrastructure architecture solutions",
       icon: <Cloud className="w-8 h-8" />,
       features: [
-        "AWS, Google Cloud, Vercel setup",
-        "Serverless and edge deployments",
-        "Docker containerization",
+        "Cloud platform setup and deployment",
+        "Serverless and edge computing",
+        "Container orchestration",
         "Microservices architecture",
-        "Real-time communication systems"
+        "Infrastructure automation"
       ],
       color: "from-orange-500 to-red-500",
       deliverables: ["Cloud Setup", "Container Images", "DevOps Tools"]
     },
-          {
-        title: "E-commerce Platforms",
-        description: "Modern e-commerce solutions with beautiful UI, secure payments, and scalable marketplace features",
-        icon: <ShoppingCart className="w-8 h-8" />,
-        features: [
-          "Modern user interfaces",
-          "Secure payment integration",
-          "Inventory management",
-          "Business insights dashboards",
-          "Scalable marketplace solutions"
-        ],
-        color: "from-pink-500 to-red-500",
-        deliverables: ["E-commerce Site", "Admin Panel", "Payment Setup"]
-      }
+    {
+      title: "E-commerce Platforms",
+      description: "Complete e-commerce solutions with secure payments and scalable marketplace functionality",
+      icon: <ShoppingCart className="w-8 h-8" />,
+      features: [
+        "Modern user interfaces",
+        "Secure payment integration",
+        "Inventory management systems",
+        "Business analytics dashboards",
+        "Scalable marketplace solutions"
+      ],
+      color: "from-pink-500 to-red-500",
+      deliverables: ["E-commerce Site", "Admin Panel", "Payment Setup"]
+    }
   ]
 
   const servicePackages = [
@@ -426,12 +1202,12 @@ export default function ServicesPage() {
     {
       name: "Starter Package",
       description: "Perfect for small businesses and startups looking to establish their digital presence",
-      price: "Starting at $2,500",
+      price: "Starting at $1,500",
       features: [
         "Basic web application",
         "Responsive design",
         "Basic API integration",
-        "Database setup (PostgreSQL/MongoDB)",
+        "Database setup and configuration",
         "1 month support"
       ],
       ideal: "Small businesses, MVPs",
@@ -440,7 +1216,7 @@ export default function ServicesPage() {
     {
       name: "Professional Package",
       description: "Comprehensive solution for growing businesses requiring advanced features and integrations",
-      price: "Starting at $7,500",
+      price: "Starting at $4,500",
       features: [
         "Advanced web applications",
         "AI agent integration",
@@ -454,7 +1230,7 @@ export default function ServicesPage() {
     {
       name: "Enterprise Package",
       description: "Complete digital transformation solution with cutting-edge technologies and ongoing support",
-      price: "Starting at $15,000",
+      price: "Starting at $9,000",
       features: [
         "Full-stack solution",
         "Custom AI agents",
@@ -594,11 +1370,11 @@ export default function ServicesPage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
             {coreServices.map((service, index) => (
               <motion.div
                 key={index}
-                className="dev-service-card p-4 sm:p-8 group transition-all duration-300 relative"
+                className="dev-service-card p-4 sm:p-8 group transition-all duration-300 relative flex flex-col h-[480px]"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -607,43 +1383,60 @@ export default function ServicesPage() {
               >
                 <div className="particle-overlay"></div>
                 <div className="grid-overlay"></div>
-                <div className="relative z-10">
-                  <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${service.color} group-hover:scale-110 transition-transform duration-300`}>
                       <div className="text-white">{service.icon}</div>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-3 group-hover:text-purple-300 transition-colors">
+                      <h3 className="text-lg sm:text-xl font-semibold text-white group-hover:text-purple-300 transition-colors">
                         {service.title}
                       </h3>
                     </div>
                   </div>
                   
-                  <p className="text-gray-400 leading-relaxed mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors text-sm sm:text-base">
-                    {service.description}
-                  </p>
+                  <div className="flex-grow flex flex-col">
+                    <p className="text-gray-400 leading-relaxed mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors text-sm sm:text-base">
+                      {service.description}
+                    </p>
 
-                  <div className="mb-4 sm:mb-6">
-                    <h4 className="text-xs sm:text-sm font-medium text-white mb-2 sm:mb-3 uppercase tracking-wider font-mono">Key Features:</h4>
-                    <div className="space-y-1 sm:space-y-2">
-                      {service.features.slice(0, 3).map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-center gap-2">
-                          <CheckCircle2 className="w-3 h-3 text-green-400 flex-shrink-0" />
-                          <span className="text-gray-400 text-xs sm:text-sm">{feature}</span>
-                        </div>
+                    <div className="mb-4 sm:mb-6 flex-grow">
+                      <h4 className="text-xs sm:text-sm font-medium text-white mb-2 sm:mb-3 uppercase tracking-wider font-mono">Key Features:</h4>
+                      <div className="space-y-1 sm:space-y-2">
+                        {service.features.slice(0, 3).map((feature, featureIndex) => (
+                          <div key={featureIndex} className="flex items-center gap-2">
+                            <CheckCircle2 className="w-3 h-3 text-green-400 flex-shrink-0" />
+                            <span className="text-gray-400 text-xs sm:text-sm">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1 mb-6">
+                      {service.deliverables.map((deliverable, delIndex) => (
+                        <span
+                          key={delIndex}
+                          className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded text-xs border border-gray-700/30 font-mono group-hover:border-purple-500/30 transition-colors"
+                        >
+                          {deliverable}
+                        </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-1">
-                    {service.deliverables.map((deliverable, delIndex) => (
-                      <span
-                        key={delIndex}
-                        className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded text-xs border border-gray-700/30 font-mono group-hover:border-purple-500/30 transition-colors"
+                  {/* Get Started Button */}
+                  <div className="mt-auto">
+                    <Link href={`/services?service=${getServiceSlug(service.title)}#calculator`}>
+                      <motion.button
+                        className={`w-full px-4 py-3 rounded-xl bg-gradient-to-r ${service.color} text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-current/25 group-hover:scale-105 flex items-center justify-center gap-2`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        {deliverable}
-                      </span>
-                    ))}
+                        <Rocket className="w-4 h-4" />
+                        Get Started
+                        <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </motion.button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>
@@ -861,7 +1654,7 @@ export default function ServicesPage() {
                   {/* Enhanced CTA button with tier progression */}
                   <div className="mt-auto">
                     <Link
-                      href="/contact"
+                      href={index === 0 ? "/contact" : `/services?package=${getPackageSlug(pkg.name)}#calculator`}
                       className={`block w-full text-center px-6 py-4 rounded-full font-semibold transition-all duration-300 relative overflow-hidden group/btn ${
                         index === 0 
                           ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-xl hover:shadow-amber-500/30 ring-2 ring-amber-400/20' 
@@ -1136,7 +1929,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Tools and Estimator Section */}
-      <section className="py-32 px-4 border-t border-gray-800/50 relative overflow-hidden">
+      <section id="calculator" className="py-32 px-4 border-t border-gray-800/50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Interactive Pricing Calculator */}
           <motion.div
@@ -1266,5 +2059,26 @@ export default function ServicesPage() {
 
       <Footer />
     </div>
+  )
+}
+
+// Loading component for Suspense fallback
+function ServicesLoading() {
+  return (
+    <div className="min-h-screen pt-20 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+        <p className="text-gray-400">Loading services...</p>
+      </div>
+    </div>
+  )
+}
+
+// Default export with Suspense wrapper
+export default function ServicesPage() {
+  return (
+    <Suspense fallback={<ServicesLoading />}>
+      <ServicesPageContent />
+    </Suspense>
   )
 }

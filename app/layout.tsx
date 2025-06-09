@@ -4,8 +4,8 @@ import { Inter, Poppins } from "next/font/google"
 import { Suspense } from "react"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
-import ScrollToTop from "@/components/scroll-to-top"
-import ScrollRestoration from "@/components/scroll-restoration"
+import { ScrollToTop } from "@/components/scroll-to-top"
+import { ScrollRestoration } from "@/components/scroll-restoration"
 
 const inter = Inter({ 
   subsets: ["latin"],

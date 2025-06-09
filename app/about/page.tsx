@@ -5,10 +5,10 @@ import { useRef, useEffect, useState, useMemo, useCallback } from "react"
 import React from "react"
 import Link from "next/link"
 import dynamic from "next/dynamic"
-import Footer from "@/components/footer"
+import { Footer } from "@/components/footer"
 
 const PremiumAnimation = dynamic(
-  () => import('@/components/premium-animations').then(mod => ({ default: mod.PremiumAnimation })),
+  () => import('@/components/premium-animations').then(mod => mod.PremiumAnimation),
   { 
     ssr: false,
     loading: () => (
@@ -224,8 +224,6 @@ const ScrollingText = React.memo(({ text, speed = 15, direction = "left" }: { te
 })
 ScrollingText.displayName = 'ScrollingText'
 
-
-
 const GeometricVisual = React.memo(({ type }: { type: 'ai' | 'web' | 'ecommerce' | 'automation' | 'software' | 'cloud' }) => {
   return (
     <div className="w-full h-80">
@@ -234,6 +232,146 @@ const GeometricVisual = React.memo(({ type }: { type: 'ai' | 'web' | 'ecommerce'
   )
 })
 GeometricVisual.displayName = 'GeometricVisual'
+
+// Component for rendering focus area styles - extracted from IIFE to fix Fast Refresh
+const FocusAreaStyles = React.memo(({ visualType }: { visualType: 'ai' | 'web' | 'ecommerce' | 'automation' | 'software' | 'cloud' }) => {
+  const boxStyles = {
+    ai: {
+      gradient: "from-gray-950/98 via-gray-900/95 to-gray-950/98",
+      border: "border-gray-800/60",
+      hoverBorder: "group-hover:border-gray-700/80",
+      accent: "from-transparent via-violet-600/15 to-transparent group-hover:via-violet-500/25",
+      bottomAccent: "from-violet-500/70 via-purple-500/70 to-indigo-500/70",
+      cornerDot: "bg-violet-500/20 group-hover:bg-violet-500/40",
+      titleHover: "group-hover:from-violet-400 group-hover:to-purple-400",
+      tagColors: "from-violet-500/10 via-purple-500/10 to-indigo-500/10 group-hover:from-violet-500/20 group-hover:via-purple-500/20 group-hover:to-indigo-500/20"
+    },
+    web: {
+      gradient: "from-gray-950/98 via-slate-900/95 to-gray-950/98",
+      border: "border-slate-800/60",
+      hoverBorder: "group-hover:border-slate-700/80",
+      accent: "from-transparent via-cyan-600/15 to-transparent group-hover:via-cyan-500/25",
+      bottomAccent: "from-cyan-500/70 via-blue-500/70 to-indigo-500/70",
+      cornerDot: "bg-cyan-500/20 group-hover:bg-cyan-500/40",
+      titleHover: "group-hover:from-cyan-400 group-hover:to-blue-400",
+      tagColors: "from-cyan-500/10 via-blue-500/10 to-indigo-500/10 group-hover:from-cyan-500/20 group-hover:via-blue-500/20 group-hover:to-indigo-500/20"
+    },
+    ecommerce: {
+      gradient: "from-gray-950/98 via-emerald-950/95 to-gray-950/98",
+      border: "border-emerald-900/60",
+      hoverBorder: "group-hover:border-emerald-800/80",
+      accent: "from-transparent via-emerald-600/15 to-transparent group-hover:via-emerald-500/25",
+      bottomAccent: "from-emerald-500/70 via-green-500/70 to-teal-500/70",
+      cornerDot: "bg-emerald-500/20 group-hover:bg-emerald-500/40",
+      titleHover: "group-hover:from-emerald-400 group-hover:to-green-400",
+      tagColors: "from-emerald-500/10 via-green-500/10 to-teal-500/10 group-hover:from-emerald-500/20 group-hover:via-green-500/20 group-hover:to-teal-500/20"
+    },
+    automation: {
+      gradient: "from-gray-950/98 via-amber-950/95 to-gray-950/98",
+      border: "border-amber-900/60",
+      hoverBorder: "group-hover:border-amber-800/80",
+      accent: "from-transparent via-amber-600/15 to-transparent group-hover:via-amber-500/25",
+      bottomAccent: "from-amber-500/70 via-orange-500/70 to-red-500/70",
+      cornerDot: "bg-amber-500/20 group-hover:bg-amber-500/40",
+      titleHover: "group-hover:from-amber-400 group-hover:to-orange-400",
+      tagColors: "from-amber-500/10 via-orange-500/10 to-red-500/10 group-hover:from-amber-500/20 group-hover:via-orange-500/20 group-hover:to-red-500/20"
+    },
+    software: {
+      gradient: "from-gray-950/98 via-rose-950/95 to-gray-950/98",
+      border: "border-rose-900/60",
+      hoverBorder: "group-hover:border-rose-800/80",
+      accent: "from-transparent via-rose-600/15 to-transparent group-hover:via-rose-500/25",
+      bottomAccent: "from-rose-500/70 via-pink-500/70 to-fuchsia-500/70",
+      cornerDot: "bg-rose-500/20 group-hover:bg-rose-500/40",
+      titleHover: "group-hover:from-rose-400 group-hover:to-pink-400",
+      tagColors: "from-rose-500/10 via-pink-500/10 to-fuchsia-500/10 group-hover:from-rose-500/20 group-hover:via-pink-500/20 group-hover:to-fuchsia-500/20"
+    },
+    cloud: {
+      gradient: "from-gray-950/98 via-sky-950/95 to-gray-950/98",
+      border: "border-sky-900/60",
+      hoverBorder: "group-hover:border-sky-800/80",
+      accent: "from-transparent via-sky-600/15 to-transparent group-hover:via-sky-500/25",
+      bottomAccent: "from-sky-500/70 via-blue-500/70 to-cyan-500/70",
+      cornerDot: "bg-sky-500/20 group-hover:bg-sky-500/40",
+      titleHover: "group-hover:from-sky-400 group-hover:to-blue-400",
+      tagColors: "from-sky-500/10 via-blue-500/10 to-cyan-500/10 group-hover:from-sky-500/20 group-hover:via-blue-500/20 group-hover:to-cyan-500/20"
+    }
+  };
+  
+  const style = boxStyles[visualType] || boxStyles.ai;
+  
+  return (
+    <>
+      {/* Premium outer glow effect - very subtle */}
+      <div className={`absolute -inset-1 bg-gradient-to-r ${style.accent} rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-all duration-700`} />
+      
+      {/* Main premium container with unique gradient */}
+      <div className={`relative rounded-3xl bg-gradient-to-br ${style.gradient} backdrop-blur-2xl border ${style.border} ${style.hoverBorder} p-10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-all duration-500`}>
+        {/* Subtle inner gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.008] via-transparent to-transparent rounded-3xl" />
+        
+        {/* Very subtle accent on hover */}
+        <motion.div
+          className={`absolute inset-0 bg-gradient-to-br ${style.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl`}
+          initial={false}
+        />
+        
+        {/* Top accent line */}
+        <div className={`absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r ${style.accent} transition-all duration-500`} />
+        
+        {/* Bottom accent with unique color */}
+        <div className={`absolute bottom-0 left-0 w-0 h-px bg-gradient-to-r ${style.bottomAccent} group-hover:w-full transition-all duration-1000 ease-out`} />
+        
+        {/* Corner accents with theme color */}
+        <div className={`absolute top-6 right-6 w-2 h-2 ${style.cornerDot} rounded-full group-hover:scale-150 transition-all duration-300`} />
+        <div className={`absolute bottom-6 left-6 w-1.5 h-1.5 ${style.cornerDot} rounded-full group-hover:scale-150 transition-all duration-300 delay-100`} />
+      </div>
+    </>
+  );
+});
+FocusAreaStyles.displayName = 'FocusAreaStyles';
+
+// Component for rendering focus area content 
+const FocusAreaContent = React.memo(({ area }: { area: { visualType: 'ai' | 'web' | 'ecommerce' | 'automation' | 'software' | 'cloud'; title: string; description: string; highlights: string[] } }) => {
+  const style = {
+    ai: { titleHover: "group-hover:from-violet-400 group-hover:to-purple-400", tagColors: "from-violet-500/10 via-purple-500/10 to-indigo-500/10 group-hover:from-violet-500/20 group-hover:via-purple-500/20 group-hover:to-indigo-500/20" },
+    web: { titleHover: "group-hover:from-cyan-400 group-hover:to-blue-400", tagColors: "from-cyan-500/10 via-blue-500/10 to-indigo-500/10 group-hover:from-cyan-500/20 group-hover:via-blue-500/20 group-hover:to-indigo-500/20" },
+    ecommerce: { titleHover: "group-hover:from-emerald-400 group-hover:to-green-400", tagColors: "from-emerald-500/10 via-green-500/10 to-teal-500/10 group-hover:from-emerald-500/20 group-hover:via-green-500/20 group-hover:to-teal-500/20" },
+    automation: { titleHover: "group-hover:from-amber-400 group-hover:to-orange-400", tagColors: "from-amber-500/10 via-orange-500/10 to-red-500/10 group-hover:from-amber-500/20 group-hover:via-orange-500/20 group-hover:to-red-500/20" },
+    software: { titleHover: "group-hover:from-rose-400 group-hover:to-pink-400", tagColors: "from-rose-500/10 via-pink-500/10 to-fuchsia-500/10 group-hover:from-rose-500/20 group-hover:via-pink-500/20 group-hover:to-fuchsia-500/20" },
+    cloud: { titleHover: "group-hover:from-sky-400 group-hover:to-blue-400", tagColors: "from-sky-500/10 via-blue-500/10 to-cyan-500/10 group-hover:from-sky-500/20 group-hover:via-blue-500/20 group-hover:to-cyan-500/20" }
+  }[area.visualType] || { titleHover: "group-hover:from-violet-400 group-hover:to-purple-400", tagColors: "from-violet-500/10 via-purple-500/10 to-indigo-500/10 group-hover:from-violet-500/20 group-hover:via-purple-500/20 group-hover:to-indigo-500/20" };
+
+  return (
+    <div className="relative z-10">
+      <motion.h3 
+        className={`text-3xl lg:text-4xl font-bold text-gray-100 mb-6 group-hover:text-transparent group-hover:bg-gradient-to-r ${style.titleHover} group-hover:bg-clip-text transition-all duration-500`}
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.2 }}
+      >
+        {area.title}
+      </motion.h3>
+      
+      <p className="text-gray-400 mb-8 leading-relaxed text-lg font-light group-hover:text-gray-300 transition-colors duration-300">
+        {area.description}
+      </p>
+      
+      <div className="flex flex-wrap gap-3">
+        {area.highlights.map((highlight: string, highlightIndex: number) => (
+          <motion.span
+            key={highlightIndex}
+            className={`px-5 py-2.5 text-sm font-medium bg-gradient-to-r ${style.tagColors} text-gray-300 rounded-full border border-gray-700/40 backdrop-blur-sm group-hover:border-gray-600/60 group-hover:text-gray-200 transition-all duration-300 hover:scale-105`}
+            whileHover={{ y: -2 }}
+            transition={{ duration: 0.2 }}
+          >
+            {highlight}
+          </motion.span>
+        ))}
+      </div>
+    </div>
+  );
+});
+FocusAreaContent.displayName = 'FocusAreaContent';
 
 export default function AboutPage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -492,128 +630,8 @@ export default function AboutPage() {
                   >
                     <div className="relative overflow-hidden">
                       {/* Different premium styles for each service */}
-                      {(() => {
-                        const boxStyles = {
-                          ai: {
-                            gradient: "from-gray-950/98 via-gray-900/95 to-gray-950/98",
-                            border: "border-gray-800/60",
-                            hoverBorder: "group-hover:border-gray-700/80",
-                            accent: "from-transparent via-violet-600/15 to-transparent group-hover:via-violet-500/25",
-                            bottomAccent: "from-violet-500/70 via-purple-500/70 to-indigo-500/70",
-                            cornerDot: "bg-violet-500/20 group-hover:bg-violet-500/40",
-                            titleHover: "group-hover:from-violet-400 group-hover:to-purple-400",
-                            tagColors: "from-violet-500/10 via-purple-500/10 to-indigo-500/10 group-hover:from-violet-500/20 group-hover:via-purple-500/20 group-hover:to-indigo-500/20"
-                          },
-                          web: {
-                            gradient: "from-gray-950/98 via-slate-900/95 to-gray-950/98",
-                            border: "border-slate-800/60",
-                            hoverBorder: "group-hover:border-slate-700/80",
-                            accent: "from-transparent via-cyan-600/15 to-transparent group-hover:via-cyan-500/25",
-                            bottomAccent: "from-cyan-500/70 via-blue-500/70 to-indigo-500/70",
-                            cornerDot: "bg-cyan-500/20 group-hover:bg-cyan-500/40",
-                            titleHover: "group-hover:from-cyan-400 group-hover:to-blue-400",
-                            tagColors: "from-cyan-500/10 via-blue-500/10 to-indigo-500/10 group-hover:from-cyan-500/20 group-hover:via-blue-500/20 group-hover:to-indigo-500/20"
-                          },
-                          ecommerce: {
-                            gradient: "from-gray-950/98 via-emerald-950/95 to-gray-950/98",
-                            border: "border-emerald-900/60",
-                            hoverBorder: "group-hover:border-emerald-800/80",
-                            accent: "from-transparent via-emerald-600/15 to-transparent group-hover:via-emerald-500/25",
-                            bottomAccent: "from-emerald-500/70 via-green-500/70 to-teal-500/70",
-                            cornerDot: "bg-emerald-500/20 group-hover:bg-emerald-500/40",
-                            titleHover: "group-hover:from-emerald-400 group-hover:to-green-400",
-                            tagColors: "from-emerald-500/10 via-green-500/10 to-teal-500/10 group-hover:from-emerald-500/20 group-hover:via-green-500/20 group-hover:to-teal-500/20"
-                          },
-                          automation: {
-                            gradient: "from-gray-950/98 via-amber-950/95 to-gray-950/98",
-                            border: "border-amber-900/60",
-                            hoverBorder: "group-hover:border-amber-800/80",
-                            accent: "from-transparent via-amber-600/15 to-transparent group-hover:via-amber-500/25",
-                            bottomAccent: "from-amber-500/70 via-orange-500/70 to-red-500/70",
-                            cornerDot: "bg-amber-500/20 group-hover:bg-amber-500/40",
-                            titleHover: "group-hover:from-amber-400 group-hover:to-orange-400",
-                            tagColors: "from-amber-500/10 via-orange-500/10 to-red-500/10 group-hover:from-amber-500/20 group-hover:via-orange-500/20 group-hover:to-red-500/20"
-                          },
-                          software: {
-                            gradient: "from-gray-950/98 via-rose-950/95 to-gray-950/98",
-                            border: "border-rose-900/60",
-                            hoverBorder: "group-hover:border-rose-800/80",
-                            accent: "from-transparent via-rose-600/15 to-transparent group-hover:via-rose-500/25",
-                            bottomAccent: "from-rose-500/70 via-pink-500/70 to-fuchsia-500/70",
-                            cornerDot: "bg-rose-500/20 group-hover:bg-rose-500/40",
-                            titleHover: "group-hover:from-rose-400 group-hover:to-pink-400",
-                            tagColors: "from-rose-500/10 via-pink-500/10 to-fuchsia-500/10 group-hover:from-rose-500/20 group-hover:via-pink-500/20 group-hover:to-fuchsia-500/20"
-                          },
-                          cloud: {
-                            gradient: "from-gray-950/98 via-sky-950/95 to-gray-950/98",
-                            border: "border-sky-900/60",
-                            hoverBorder: "group-hover:border-sky-800/80",
-                            accent: "from-transparent via-sky-600/15 to-transparent group-hover:via-sky-500/25",
-                            bottomAccent: "from-sky-500/70 via-blue-500/70 to-cyan-500/70",
-                            cornerDot: "bg-sky-500/20 group-hover:bg-sky-500/40",
-                            titleHover: "group-hover:from-sky-400 group-hover:to-blue-400",
-                            tagColors: "from-sky-500/10 via-blue-500/10 to-cyan-500/10 group-hover:from-sky-500/20 group-hover:via-blue-500/20 group-hover:to-cyan-500/20"
-                          }
-                        };
-                        
-                        const style = boxStyles[area.visualType] || boxStyles.ai;
-                        
-                        return (
-                          <>
-                            {/* Premium outer glow effect - very subtle */}
-                            <div className={`absolute -inset-1 bg-gradient-to-r ${style.accent} rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-all duration-700`} />
-                            
-                            {/* Main premium container with unique gradient */}
-                            <div className={`relative rounded-3xl bg-gradient-to-br ${style.gradient} backdrop-blur-2xl border ${style.border} ${style.hoverBorder} p-10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-all duration-500`}>
-                              {/* Subtle inner gradient */}
-                              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.008] via-transparent to-transparent rounded-3xl" />
-                              
-                              {/* Very subtle accent on hover */}
-                              <motion.div
-                                className={`absolute inset-0 bg-gradient-to-br ${style.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl`}
-                                initial={false}
-                              />
-                              
-                              {/* Top accent line */}
-                              <div className={`absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r ${style.accent} transition-all duration-500`} />
-                              
-                              <div className="relative z-10">
-                                <motion.h3 
-                                  className={`text-3xl lg:text-4xl font-bold text-gray-100 mb-6 group-hover:text-transparent group-hover:bg-gradient-to-r ${style.titleHover} group-hover:bg-clip-text transition-all duration-500`}
-                                  whileHover={{ scale: 1.02 }}
-                                  transition={{ duration: 0.2 }}
-                                >
-                                  {area.title}
-                                </motion.h3>
-                                
-                                <p className="text-gray-400 mb-8 leading-relaxed text-lg font-light group-hover:text-gray-300 transition-colors duration-300">
-                                  {area.description}
-                                </p>
-                                
-                                <div className="flex flex-wrap gap-3">
-                                  {area.highlights.map((highlight, highlightIndex) => (
-                                    <motion.span
-                                      key={highlightIndex}
-                                      className={`px-5 py-2.5 text-sm font-medium bg-gradient-to-r ${style.tagColors} text-gray-300 rounded-full border border-gray-700/40 backdrop-blur-sm group-hover:border-gray-600/60 group-hover:text-gray-200 transition-all duration-300 hover:scale-105`}
-                                      whileHover={{ y: -2 }}
-                                      transition={{ duration: 0.2 }}
-                                    >
-                                      {highlight}
-                                    </motion.span>
-                                  ))}
-                                </div>
-                              </div>
-                              
-                              {/* Bottom accent with unique color */}
-                              <div className={`absolute bottom-0 left-0 w-0 h-px bg-gradient-to-r ${style.bottomAccent} group-hover:w-full transition-all duration-1000 ease-out`} />
-                              
-                              {/* Corner accents with theme color */}
-                              <div className={`absolute top-6 right-6 w-2 h-2 ${style.cornerDot} rounded-full group-hover:scale-150 transition-all duration-300`} />
-                              <div className={`absolute bottom-6 left-6 w-1.5 h-1.5 ${style.cornerDot} rounded-full group-hover:scale-150 transition-all duration-300 delay-100`} />
-                            </div>
-                          </>
-                        );
-                      })()}
+                      <FocusAreaStyles visualType={area.visualType} />
+                      <FocusAreaContent area={area} />
                     </div>
                   </motion.div>
 
