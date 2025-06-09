@@ -18,7 +18,7 @@ import {
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: "easeOut" },
+  transition: { duration: 0.25, ease: "easeOut" },
 }
 
 export default function Footer() {
@@ -133,7 +133,7 @@ export default function Footer() {
                     whileHover={{ scale: 1.05 }}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
                     viewport={{ once: true }}
                   >
                     {social.icon}
@@ -259,7 +259,7 @@ export default function Footer() {
                   className="px-2 py-1 text-xs bg-gray-800/60 text-gray-300 rounded border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300"
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  transition={{ duration: 0.3, delay: index * 0.03 }}
                   viewport={{ once: true }}
                 >
                   {tech}
@@ -278,7 +278,7 @@ export default function Footer() {
                   whileHover={{ scale: 1.05 }}
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
                   viewport={{ once: true }}
                 >
                   {social.icon}
@@ -299,7 +299,7 @@ export default function Footer() {
                   key={link.name}
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
                   viewport={{ once: true }}
                 >
                   <Link

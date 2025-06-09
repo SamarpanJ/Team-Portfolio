@@ -11,25 +11,25 @@ import { TestimonialsSection } from "@/components/testimonials"
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.3, ease: "easeOut" },
 }
 
 const fadeInLeft = {
   initial: { opacity: 0, x: -30 },
   animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.3, ease: "easeOut" },
 }
 
 const fadeInRight = {
   initial: { opacity: 0, x: 30 },
   animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.3, ease: "easeOut" },
 }
 
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.08,
     },
   },
 }
@@ -114,8 +114,8 @@ export default function HomePage() {
             <motion.div
               className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full glass-card mb-6 sm:mb-8"
               initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+                          animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
             >
               <Stars className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
               <span className="text-xs sm:text-sm text-gray-300">Software Development & AI Solutions</span>
@@ -132,7 +132,7 @@ export default function HomePage() {
             className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-12 max-w-4xl mx-auto font-light leading-relaxed px-2 sm:px-0 w-full"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
           >
             We are a passionate team of software engineers delivering high-quality, innovative software solutions. By leveraging intelligent systems and modern engineering practices, we build tools that are practical, adaptable, and built for long-term value.
           </motion.p>
@@ -141,7 +141,7 @@ export default function HomePage() {
               className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0 w-full max-w-lg sm:max-w-2xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
             >
               <Link
                 href="/services"
@@ -164,7 +164,7 @@ export default function HomePage() {
               className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto px-2 sm:px-0 w-full"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
             >
               {stats.map((stat, index) => (
                 <motion.div
@@ -214,7 +214,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
               <Code className="w-3 h-3 text-blue-400" />
@@ -271,7 +271,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-8"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
               <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400"></div>
@@ -349,7 +349,7 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.4 }}
             viewport={{ once: true }}
             className="w-full"
           >
@@ -364,7 +364,7 @@ export default function HomePage() {
               className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center w-full max-w-lg sm:max-w-2xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
               viewport={{ once: true }}
             >
               <Link

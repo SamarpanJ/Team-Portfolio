@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { motion } from "framer-motion"
 import {
   Code,
@@ -38,7 +39,14 @@ import {
   Clock,
   Award,
   Workflow,
-  Briefcase
+  Briefcase,
+  Building,
+  Calculator,
+  Plus,
+  Minus,
+  DollarSign,
+  Sparkles,
+  Zap as Lightning
 } from "lucide-react"
 import Link from "next/link"
 import Footer from "@/components/footer"
@@ -46,15 +54,270 @@ import Footer from "@/components/footer"
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.3, ease: "easeOut" },
 }
 
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.12,
+      staggerChildren: 0.06,
     },
   },
+}
+
+// Interactive Pricing Calculator Component
+function PricingCalculator() {
+  const [selectedServices, setSelectedServices] = React.useState<string[]>([])
+  const [selectedAddOns, setSelectedAddOns] = React.useState<string[]>([])
+  const [estimatedPrice, setEstimatedPrice] = React.useState(0)
+  const [recommendedTier, setRecommendedTier] = React.useState('')
+
+  const services = [
+    { id: 'web-app', name: 'Custom Web Application', basePrice: 3000, description: 'Full-stack web development' },
+    { id: 'ai-agents', name: 'AI Agents & ML Integration', basePrice: 4000, description: 'Custom AI solutions and LLM integration' },
+    { id: 'database', name: 'Database Design & Setup', basePrice: 1500, description: 'PostgreSQL, MongoDB, or vector databases' },
+    { id: 'cloud-hosting', name: 'Cloud Deployment & Hosting', basePrice: 2000, description: 'AWS, GCP, or Azure deployment' },
+    { id: 'ecommerce', name: 'E-commerce Platform', basePrice: 3500, description: 'Full e-commerce solution with payments' },
+    { id: 'api-development', name: 'API Development', basePrice: 2500, description: 'RESTful APIs and integrations' },
+    { id: 'real-time', name: 'Real-time Features', basePrice: 2000, description: 'WebSocket, live updates, notifications' },
+    { id: 'security', name: 'Security Implementation', basePrice: 1800, description: 'Authentication, authorization, encryption' },
+    { id: 'business-intelligence', name: 'Business Intelligence', basePrice: 3000, description: 'Analytics dashboards and reporting' },
+    { id: 'devops', name: 'DevOps & CI/CD', basePrice: 2200, description: 'Automated deployment and monitoring' }
+  ]
+
+  const addOns = [
+    { id: 'extra-support', name: 'Extended Support (+3 months)', price: 1500 },
+    { id: 'extra-pages', name: 'Additional Pages (5+)', price: 1000 },
+    { id: 'sla', name: 'Premium SLA (99.9% uptime)', price: 2000 },
+    { id: 'custom-training', name: 'Custom AI Model Training', price: 3000 },
+    { id: 'mobile-app', name: 'Mobile App Development', price: 4000 },
+    { id: 'priority-support', name: '24/7 Priority Support', price: 1200 }
+  ]
+
+  React.useEffect(() => {
+    let total = selectedServices.reduce((sum, serviceId) => {
+      const service = services.find(s => s.id === serviceId)
+      return sum + (service?.basePrice || 0)
+    }, 0)
+
+    total += selectedAddOns.reduce((sum, addOnId) => {
+      const addOn = addOns.find(a => a.id === addOnId)
+      return sum + (addOn?.price || 0)
+    }, 0)
+
+    setEstimatedPrice(total)
+
+    // Recommend tier based on total price
+    if (total < 5000) {
+      setRecommendedTier('Starter Package')
+    } else if (total < 12000) {
+      setRecommendedTier('Professional Package')
+    } else {
+      setRecommendedTier('Enterprise Package')
+    }
+  }, [selectedServices, selectedAddOns])
+
+  const toggleService = (serviceId: string) => {
+    setSelectedServices(prev => 
+      prev.includes(serviceId) 
+        ? prev.filter(id => id !== serviceId)
+        : [...prev, serviceId]
+    )
+  }
+
+  const toggleAddOn = (addOnId: string) => {
+    setSelectedAddOns(prev => 
+      prev.includes(addOnId)
+        ? prev.filter(id => id !== addOnId)
+        : [...prev, addOnId]
+    )
+  }
+
+  const getTierColor = (tier: string) => {
+    switch (tier) {
+      case 'Starter Package': return 'text-emerald-400'
+      case 'Professional Package': return 'text-purple-400'
+      case 'Enterprise Package': return 'text-blue-400'
+      default: return 'text-gray-400'
+    }
+  }
+
+  const getTierGradient = (tier: string) => {
+    switch (tier) {
+      case 'Starter Package': return 'from-emerald-500/20 to-emerald-600/20'
+      case 'Professional Package': return 'from-purple-500/20 to-pink-500/20'
+      case 'Enterprise Package': return 'from-blue-500/20 to-cyan-500/20'
+      default: return 'from-gray-500/20 to-gray-600/20'
+    }
+  }
+
+  return (
+    <div className="grid lg:grid-cols-3 gap-8">
+      {/* Services Selection */}
+      <div className="lg:col-span-2 space-y-6">
+        <div>
+          <h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <Settings className="w-5 h-5 text-cyan-400" />
+            Select Your Required Services
+          </h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            {services.map((service) => (
+              <motion.div
+                key={service.id}
+                className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
+                  selectedServices.includes(service.id)
+                    ? 'border-cyan-400/50 bg-cyan-500/10'
+                    : 'border-slate-600/30 bg-slate-800/20 hover:border-slate-500/50'
+                }`}
+                onClick={() => toggleService(service.id)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 transition-colors ${
+                    selectedServices.includes(service.id)
+                      ? 'border-cyan-400 bg-cyan-400'
+                      : 'border-slate-500'
+                  }`}>
+                    {selectedServices.includes(service.id) && (
+                      <CheckCircle2 className="w-3 h-3 text-white" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="font-semibold text-white mb-1">{service.name}</h5>
+                    <p className="text-sm text-gray-400 mb-2">{service.description}</p>
+                    <div className="text-cyan-400 font-medium text-sm">
+                      +${service.basePrice.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Add-ons Selection */}
+        <div>
+          <h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <Plus className="w-5 h-5 text-amber-400" />
+            Optional Add-ons
+          </h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            {addOns.map((addOn) => (
+              <motion.div
+                key={addOn.id}
+                className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
+                  selectedAddOns.includes(addOn.id)
+                    ? 'border-amber-400/50 bg-amber-500/10'
+                    : 'border-slate-600/30 bg-slate-800/20 hover:border-slate-500/50'
+                }`}
+                onClick={() => toggleAddOn(addOn.id)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                      selectedAddOns.includes(addOn.id)
+                        ? 'border-amber-400 bg-amber-400'
+                        : 'border-slate-500'
+                    }`}>
+                      {selectedAddOns.includes(addOn.id) && (
+                        <CheckCircle2 className="w-3 h-3 text-white" />
+                      )}
+                    </div>
+                    <span className="font-medium text-white">{addOn.name}</span>
+                  </div>
+                  <div className="text-amber-400 font-medium text-sm">
+                    +${addOn.price.toLocaleString()}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Price Estimate & Recommendation */}
+      <div className="lg:col-span-1">
+        <div className="sticky top-8">
+          <motion.div
+            className={`p-6 rounded-2xl border bg-gradient-to-br ${getTierGradient(recommendedTier)} backdrop-blur-sm`}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <DollarSign className="w-5 h-5 text-green-400" />
+                <span className="text-sm text-gray-400 uppercase tracking-wider">Estimated Cost</span>
+              </div>
+              <motion.div 
+                className="text-4xl font-bold text-white mb-2"
+                key={estimatedPrice}
+                initial={{ scale: 1.1 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                ${estimatedPrice.toLocaleString()}
+              </motion.div>
+              {estimatedPrice > 0 && (
+                <div className="text-sm text-gray-500">
+                  Final cost may vary based on complexity
+                </div>
+              )}
+            </div>
+
+            {recommendedTier && estimatedPrice > 0 && (
+              <div className="text-center mb-6">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Sparkles className="w-4 h-4 text-yellow-400" />
+                  <span className="text-xs text-gray-400 uppercase tracking-wider">Recommended Tier</span>
+                </div>
+                <div className={`text-lg font-bold ${getTierColor(recommendedTier)}`}>
+                  {recommendedTier}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3 mb-6">
+              <div className="text-sm text-gray-400">
+                <strong>Selected Services:</strong> {selectedServices.length}
+              </div>
+              <div className="text-sm text-gray-400">
+                <strong>Add-ons:</strong> {selectedAddOns.length}
+              </div>
+              {selectedServices.length > 0 && (
+                <div className="text-sm text-gray-400">
+                  <strong>Estimated Timeline:</strong> {
+                    estimatedPrice < 5000 ? '2-4 weeks' :
+                    estimatedPrice < 12000 ? '6-12 weeks' : '12-24 weeks'
+                  }
+                </div>
+              )}
+            </div>
+
+            {estimatedPrice > 0 && (
+              <motion.button
+                className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl transition-all duration-300 hover:from-cyan-600 hover:to-blue-600 flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Get Detailed Quote
+                <Lightning className="w-4 h-4" />
+              </motion.button>
+            )}
+
+            {estimatedPrice === 0 && (
+              <div className="text-center text-gray-500 text-sm">
+                Select services above to see your estimate
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function ServicesPage() {
@@ -146,6 +409,20 @@ export default function ServicesPage() {
   ]
 
   const servicePackages = [
+    {
+      name: "Expert Consultation",
+      description: "Premium one-on-one consulting sessions with our senior technology experts for strategic guidance",
+      price: "$100/hour",
+      features: [
+        "Architecture review & planning",
+        "Technology stack consultation", 
+        "Code review & optimization",
+        "Strategic technology roadmap",
+        "Best practices guidance"
+      ],
+      ideal: "CTOs, Tech leads, Enterprises",
+      color: "from-amber-500 to-orange-500"
+    },
     {
       name: "Starter Package",
       description: "Perfect for small businesses and startups looking to establish their digital presence",
@@ -304,7 +581,7 @@ export default function ServicesPage() {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
               <Settings className="w-3 h-3 text-blue-400" />
@@ -324,7 +601,7 @@ export default function ServicesPage() {
                 className="dev-service-card p-4 sm:p-8 group transition-all duration-300 relative"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: 1.02 }}
               >
@@ -383,7 +660,7 @@ export default function ServicesPage() {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
               <Cpu className="w-3 h-3 text-cyan-400" />
@@ -459,7 +736,7 @@ export default function ServicesPage() {
             className="mt-16 text-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
             viewport={{ once: true }}
           >
             <h3 className="text-xl font-semibold text-white mb-4">Programming Languages</h3>
@@ -485,7 +762,7 @@ export default function ServicesPage() {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 mb-6"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
               <Layers className="w-3 h-3 text-green-400" />
@@ -499,7 +776,7 @@ export default function ServicesPage() {
           </motion.div>
 
           <motion.div
-            className="grid md:grid-cols-3 gap-8 items-stretch pt-12"
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch pt-12"
             variants={staggerContainer}
             initial="initial"
             whileInView="animate"
@@ -508,7 +785,14 @@ export default function ServicesPage() {
             {servicePackages.map((pkg, index) => (
               <div key={index} className="relative flex flex-col h-full">
                 {/* Tier indicator - positioned outside the card */}
-                {index === 1 && (
+                {index === 0 && (
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-50">
+                    <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-xl border-2 border-amber-400/30 whitespace-nowrap">
+                      💎 Premium
+                    </div>
+                  </div>
+                )}
+                {index === 2 && (
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-50">
                     <div className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-xl border-2 border-purple-400/30 whitespace-nowrap">
                       ⭐ Most Popular
@@ -517,30 +801,31 @@ export default function ServicesPage() {
                 )}
                 
                 <motion.div
-                  className={`package-tier-${index + 1} group transition-all duration-500 relative overflow-hidden flex flex-col flex-grow ${index === 1 ? 'scale-105 lg:scale-110 shadow-2xl shadow-purple-500/20' : ''}`}
+                  className={`package-tier-${index === 0 ? 'consultant' : index + 1} group transition-all duration-500 relative overflow-hidden flex flex-col flex-grow ${index === 0 ? 'scale-105 lg:scale-110 shadow-2xl shadow-amber-500/20' : index === 2 ? 'scale-105 lg:scale-110 shadow-2xl shadow-purple-500/20' : ''}`}
                   variants={fadeInUp}
-                  whileHover={{ y: index === 0 ? -8 : index === 1 ? -15 : -12, scale: index === 0 ? 1.02 : index === 1 ? 1.05 : 1.03 }}
-                  style={{ zIndex: index === 1 ? 10 : 1 }}
+                  whileHover={{ y: index === 0 ? -15 : index === 1 ? -8 : index === 2 ? -15 : -12, scale: index === 0 ? 1.05 : index === 1 ? 1.02 : index === 2 ? 1.05 : 1.03 }}
+                  style={{ zIndex: index === 0 ? 10 : index === 2 ? 10 : 1 }}
                 >
 
                 {/* Progressive visual effects */}
-                <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-br from-green-900/20 to-emerald-900/10' : index === 1 ? 'bg-gradient-to-br from-purple-900/30 to-violet-900/20' : 'bg-gradient-to-br from-blue-900/25 to-cyan-900/15'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                <div className={`absolute inset-0 ${index === 0 ? 'bg-gradient-to-br from-amber-900/30 to-orange-900/20' : index === 1 ? 'bg-gradient-to-br from-green-900/20 to-emerald-900/10' : index === 2 ? 'bg-gradient-to-br from-purple-900/30 to-violet-900/20' : 'bg-gradient-to-br from-blue-900/25 to-cyan-900/15'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
                 
                 {/* Enhanced particle effect for higher tiers */}
-                {index >= 1 && <div className="premium-particle-overlay"></div>}
-                {index === 2 && <div className="enterprise-glow"></div>}
+                {(index === 0 || index >= 2) && <div className="premium-particle-overlay"></div>}
+                {index === 0 && <div className="consultant-glow"></div>}
+                {index === 3 && <div className="enterprise-glow"></div>}
 
                 <div className="relative z-10 p-8 flex flex-col h-full">
                   {/* Package header with tier styling */}
                   <div className="text-center mb-8">
                     {/* Package tier icon */}
-                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${index === 0 ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30' : index === 1 ? 'bg-gradient-to-br from-purple-500/20 to-violet-500/20 border border-purple-500/30' : 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30'}`}>
-                      <div className={`text-2xl ${index === 0 ? 'text-green-400' : index === 1 ? 'text-purple-400' : 'text-blue-400'}`}>
-                        {index === 0 ? '🚀' : index === 1 ? '⭐' : '👑'}
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${index === 0 ? 'bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30' : index === 1 ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30' : index === 2 ? 'bg-gradient-to-br from-purple-500/20 to-violet-500/20 border border-purple-500/30' : 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30'}`}>
+                      <div className={`text-2xl ${index === 0 ? 'text-amber-400' : index === 1 ? 'text-green-400' : index === 2 ? 'text-purple-400' : 'text-blue-400'}`}>
+                        {index === 0 ? '💎' : index === 1 ? '🚀' : index === 2 ? '⭐' : '👑'}
                       </div>
                     </div>
 
-                    <h3 className={`text-2xl font-bold text-white mb-2 ${index === 0 ? 'group-hover:text-green-300' : index === 1 ? 'group-hover:text-purple-300' : 'group-hover:text-blue-300'} transition-colors font-mono`}>
+                    <h3 className={`text-2xl font-bold text-white mb-2 ${index === 0 ? 'group-hover:text-amber-300' : index === 1 ? 'group-hover:text-green-300' : index === 2 ? 'group-hover:text-purple-300' : 'group-hover:text-blue-300'} transition-colors font-mono`}>
                       {pkg.name}
                     </h3>
                     
@@ -550,10 +835,10 @@ export default function ServicesPage() {
                     
                     {/* Enhanced price display with tier differentiation */}
                     <div className="mb-6">
-                      <div className={`text-4xl font-bold mb-2 font-mono ${index === 0 ? 'text-green-400' : index === 1 ? 'text-purple-400 drop-shadow-lg' : 'text-blue-400 drop-shadow-xl'} ${index >= 1 ? 'bg-gradient-to-r from-current to-current bg-clip-text' : ''}`}>
+                      <div className={`text-4xl font-bold mb-2 font-mono ${index === 0 ? 'text-amber-400 drop-shadow-lg' : index === 1 ? 'text-green-400' : index === 2 ? 'text-purple-400 drop-shadow-lg' : 'text-blue-400 drop-shadow-xl'} ${index === 0 || index >= 2 ? 'bg-gradient-to-r from-current to-current bg-clip-text' : ''}`}>
                         {pkg.price}
                       </div>
-                      <div className={`text-sm ${index === 0 ? 'text-gray-500' : index === 1 ? 'text-purple-300/80' : 'text-blue-300/80'} font-medium`}>
+                      <div className={`text-sm ${index === 0 ? 'text-amber-300/80' : index === 1 ? 'text-gray-500' : index === 2 ? 'text-purple-300/80' : 'text-blue-300/80'} font-medium`}>
                         Ideal for: {pkg.ideal}
                       </div>
                     </div>
@@ -563,8 +848,8 @@ export default function ServicesPage() {
                   <div className="space-y-4 mb-8 flex-grow">
                     {pkg.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center gap-3 group/feature">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${index === 0 ? 'bg-green-500/20' : index === 1 ? 'bg-purple-500/20' : 'bg-blue-500/20'} group-hover/feature:scale-110 transition-transform duration-200`}>
-                          <CheckCircle2 className={`w-4 h-4 ${index === 0 ? 'text-green-400' : index === 1 ? 'text-purple-400' : 'text-blue-400'} flex-shrink-0`} />
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${index === 0 ? 'bg-amber-500/20' : index === 1 ? 'bg-green-500/20' : index === 2 ? 'bg-purple-500/20' : 'bg-blue-500/20'} group-hover/feature:scale-110 transition-transform duration-200`}>
+                          <CheckCircle2 className={`w-4 h-4 ${index === 0 ? 'text-amber-400' : index === 1 ? 'text-green-400' : index === 2 ? 'text-purple-400' : 'text-blue-400'} flex-shrink-0`} />
                         </div>
                         <span className="text-gray-300 group-hover:text-white transition-colors">
                           {feature}
@@ -579,15 +864,17 @@ export default function ServicesPage() {
                       href="/contact"
                       className={`block w-full text-center px-6 py-4 rounded-full font-semibold transition-all duration-300 relative overflow-hidden group/btn ${
                         index === 0 
-                          ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-green-500/25' 
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-xl hover:shadow-amber-500/30 ring-2 ring-amber-400/20' 
                           : index === 1 
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-green-500/25'
+                          : index === 2 
                           ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-xl hover:shadow-purple-500/30 ring-2 ring-purple-400/20' 
                           : 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white shadow-xl hover:shadow-blue-500/30 ring-2 ring-blue-400/30'
                       }`}
                     >
                       <div className="relative z-10 flex items-center justify-center gap-2">
-                        <span>Get Started</span>
-                        {index >= 1 && <span className="text-lg">✨</span>}
+                        <span>{index === 0 ? 'Book Session' : 'Get Started'}</span>
+                        {(index === 0 || index >= 2) && <span className="text-lg">✨</span>}
                       </div>
                       {/* Button hover effect */}
                       <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
@@ -756,7 +1043,7 @@ export default function ServicesPage() {
                                     className="relative"
                                     initial={{ opacity: 0, y: 5 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3, delay: delIndex * 0.1 }}
+                                    transition={{ duration: 0.3, delay: delIndex * 0.05 }}
                                     viewport={{ once: true }}
                                   >
                                     <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-slate-800/80 to-slate-700/80 border border-slate-600/40 rounded-2xl text-slate-300 text-sm font-medium group-hover:from-indigo-900/30 group-hover:to-indigo-800/30 group-hover:border-indigo-500/60 group-hover:text-slate-100 transition-all duration-300 backdrop-blur-sm shadow-sm">
@@ -844,6 +1131,92 @@ export default function ServicesPage() {
                 </div>
               </motion.div>
             ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Tools and Estimator Section */}
+      <section className="py-32 px-4 border-t border-gray-800/50 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Interactive Pricing Calculator */}
+          <motion.div
+            className="bg-gradient-to-br from-slate-900/90 via-slate-800/70 to-slate-900/90 backdrop-blur-xl border border-slate-600/40 rounded-3xl p-8 lg:p-12 shadow-[0_8px_32px_rgba(0,0,0,0.3)] mb-20"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            <div className="text-center mb-12">
+              <motion.div 
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border border-cyan-400/20 mb-6"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <Calculator className="w-4 h-4 text-cyan-400" />
+                <span className="text-sm text-cyan-300 font-medium uppercase tracking-wider">Interactive Calculator</span>
+              </motion.div>
+              
+              <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4 gradient-text">Custom Project Estimator</h3>
+              <p className="text-gray-400 leading-relaxed max-w-3xl mx-auto">
+                Select the services you need and get an instant estimate with recommended package tier
+              </p>
+            </div>
+
+            <PricingCalculator />
+          </motion.div>
+
+          {/* Feature Comparison Matrix */}
+          <motion.div
+            className="bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 backdrop-blur-xl border border-slate-600/30 rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold text-white mb-4 gradient-text">Compare All Features</h3>
+              <p className="text-gray-400 leading-relaxed">Detailed breakdown of what's included in each package</p>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-700/50">
+                    <th className="text-left py-4 px-6 text-gray-400 font-semibold">Features</th>
+                    <th className="text-center py-4 px-6 text-emerald-400 font-semibold">Starter</th>
+                    <th className="text-center py-4 px-6 text-purple-400 font-semibold">Professional</th>
+                    <th className="text-center py-4 px-6 text-blue-400 font-semibold">Enterprise</th>
+                    <th className="text-center py-4 px-6 text-amber-400 font-semibold">Consulting</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-700/30">
+                  {[
+                    ["Custom Web Development", "✓", "✓", "✓", "Advisory"],
+                    ["Database Design & Setup", "Basic", "Advanced", "Enterprise", "Architecture"],
+                    ["AI/ML Integration", "×", "✓", "✓", "Strategy"],
+                    ["Cloud Deployment", "Basic", "Advanced", "Multi-Cloud", "Planning"],
+                    ["Security Implementation", "Basic", "Standard", "Enterprise", "Audit"],
+                    ["API Development", "Basic", "Advanced", "Microservices", "Design"],
+                    ["Real-time Features", "×", "✓", "✓", "Planning"],
+                    ["Business Intelligence", "×", "×", "✓", "Strategy"],
+                    ["DevOps & CI/CD", "×", "Basic", "Advanced", "Setup"],
+                    ["Support Duration", "1 month", "3 months", "6 months", "Session-based"],
+                    ["Code Documentation", "Basic", "Comprehensive", "Enterprise", "Review"],
+                    ["Performance Optimization", "×", "✓", "✓", "Audit"]
+                  ].map((row, index) => (
+                    <tr key={index} className="hover:bg-slate-800/20 transition-colors">
+                      <td className="py-4 px-6 text-white font-medium">{row[0]}</td>
+                      <td className="py-4 px-6 text-center text-emerald-400">{row[1]}</td>
+                      <td className="py-4 px-6 text-center text-purple-400">{row[2]}</td>
+                      <td className="py-4 px-6 text-center text-blue-400">{row[3]}</td>
+                      <td className="py-4 px-6 text-center text-amber-400">{row[4]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </motion.div>
         </div>
       </section>

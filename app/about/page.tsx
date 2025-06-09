@@ -41,8 +41,8 @@ const staggerFlowVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
+      staggerChildren: 0.05,
+      delayChildren: 0.1
     }
   }
 }
@@ -53,7 +53,7 @@ const textRevealVariants = {
     opacity: 1, 
     y: 0, 
     rotateX: 0,
-    transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }
+    transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }
   }
 }
 
@@ -100,7 +100,7 @@ const MorphingText = React.memo(({ words, className = "" }: { words: string[]; c
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className={className}
     >
       {currentWord}
@@ -139,7 +139,7 @@ const FlowingValueCard = React.memo(({ title, description, index }: { title: str
       ref={ref}
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ duration: 1, delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
       className="group relative"
     >
       <motion.div
@@ -179,7 +179,7 @@ const FlowingValueCard = React.memo(({ title, description, index }: { title: str
           className="text-2xl font-bold text-white mb-4 relative z-10"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.8, delay: index * 0.1 }}
+          transition={{ duration: 0.4, delay: index * 0.05 }}
         >
           {title}
         </motion.h3>
@@ -188,7 +188,7 @@ const FlowingValueCard = React.memo(({ title, description, index }: { title: str
           className="text-zinc-300 leading-relaxed relative z-10"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.8, delay: index * 0.1 + 0.2 }}
+          transition={{ duration: 0.4, delay: index * 0.05 + 0.1 }}
         >
           {description}
         </motion.p>
@@ -273,8 +273,8 @@ export default function AboutPage() {
   ], [])
 
   const languages = useMemo(() => [
-    { name: "English", flag: "🇺🇸", proficiency: "Native" },
-    { name: "French", flag: "🇫🇷", proficiency: "Professional" },
+    { name: "English", flag: "🇺🇸", proficiency: "Fluent" },
+    { name: "French", flag: "🇫🇷", proficiency: "Fluent" },
     { name: "Hindi", flag: "🇮🇳", proficiency: "Native" },
     { name: "Bengali", flag: "🇮🇳", proficiency: "Native" },
     { name: "Odia", flag: "🇮🇳", proficiency: "Native" },
@@ -361,7 +361,7 @@ export default function AboutPage() {
               className="text-xl md:text-2xl text-zinc-300 leading-relaxed"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
             >
               A passionate team of software engineers focused on delivering high-quality, innovative software solutions that transform businesses globally
             </motion.p>
@@ -418,7 +418,7 @@ export default function AboutPage() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: 0.4, delay: 0.25 }}
               className="text-xl text-zinc-400 max-w-3xl mx-auto"
             >
               The principles that guide our work and shape our culture
@@ -462,7 +462,7 @@ export default function AboutPage() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: 0.4, delay: 0.25 }}
               className="text-xl text-zinc-400 max-w-4xl mx-auto"
             >
               Comprehensive technology solutions tailored to transform your business
@@ -479,7 +479,7 @@ export default function AboutPage() {
                   initial={{ opacity: 0, y: 60 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
                   className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
                 >
                   {/* Text Content - Premium styled box with unique design per service */}
@@ -488,7 +488,7 @@ export default function AboutPage() {
                     initial={{ opacity: 0, x: isEven ? -60 : 60 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
+                    transition={{ duration: 0.4, delay: 0.15 }}
                   >
                     <div className="relative overflow-hidden">
                       {/* Different premium styles for each service */}

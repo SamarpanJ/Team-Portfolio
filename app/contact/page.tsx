@@ -10,25 +10,25 @@ import Footer from "@/components/footer"
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.3, ease: "easeOut" },
 }
 
 const fadeInLeft = {
   initial: { opacity: 0, x: -30 },
   animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.3, ease: "easeOut" },
 }
 
 const fadeInRight = {
   initial: { opacity: 0, x: 30 },
   animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.3, ease: "easeOut" },
 }
 
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.08,
     },
   },
 }
@@ -171,7 +171,7 @@ export default function ContactPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-gray-900/80 to-gray-800/80 backdrop-blur-sm border border-gray-700/50 mb-8"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
             >
               <Terminal className="w-4 h-4 text-cyan-400" />
               <span className="text-sm text-gray-300 uppercase tracking-wider">~/contact</span>
@@ -187,7 +187,7 @@ export default function ContactPage() {
               className="text-lg sm:text-xl text-gray-400 max-w-4xl mx-auto font-light leading-relaxed px-2 sm:px-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
             >
               Ready to transform your ideas into intelligent solutions? Connect with our multilingual team (English, French, Hindi, Bengali, Odia) and let's discuss your project.
             </motion.p>
@@ -198,7 +198,7 @@ export default function ContactPage() {
             className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto px-2 sm:px-0 w-full"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
           >
             {stats.map((stat, index) => (
               <motion.div
@@ -495,7 +495,7 @@ export default function ContactPage() {
                       className="flex items-center gap-3 group"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
                       viewport={{ once: true }}
                     >
                       <div className="w-2 h-2 bg-green-400 rounded-full group-hover:scale-150 transition-transform duration-200"></div>
