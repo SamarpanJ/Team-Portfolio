@@ -234,7 +234,7 @@ const GeometricVisual = React.memo(({ type }: { type: 'ai' | 'web' | 'ecommerce'
 GeometricVisual.displayName = 'GeometricVisual'
 
 // Component for rendering focus area styles - extracted from IIFE to fix Fast Refresh
-const FocusAreaStyles = React.memo(({ visualType }: { visualType: 'ai' | 'web' | 'ecommerce' | 'automation' | 'software' | 'cloud' }) => {
+const FocusAreaStyles = React.memo(({ visualType, children }: { visualType: 'ai' | 'web' | 'ecommerce' | 'automation' | 'software' | 'cloud', children?: React.ReactNode }) => {
   const boxStyles = {
     ai: {
       gradient: "from-gray-950/98 via-gray-900/95 to-gray-950/98",
@@ -325,6 +325,10 @@ const FocusAreaStyles = React.memo(({ visualType }: { visualType: 'ai' | 'web' |
         {/* Corner accents with theme color */}
         <div className={`absolute top-6 right-6 w-2 h-2 ${style.cornerDot} rounded-full group-hover:scale-150 transition-all duration-300`} />
         <div className={`absolute bottom-6 left-6 w-1.5 h-1.5 ${style.cornerDot} rounded-full group-hover:scale-150 transition-all duration-300 delay-100`} />
+        {/* Content inside the box */}
+        <div className="relative z-10">
+          {children}
+        </div>
       </div>
     </>
   );
@@ -629,9 +633,10 @@ export default function AboutPage() {
                     transition={{ duration: 0.4, delay: 0.15 }}
                   >
                     <div className="relative overflow-hidden">
-                      {/* Different premium styles for each service */}
-                      <FocusAreaStyles visualType={area.visualType} />
-                      <FocusAreaContent area={area} />
+                      {/* Different premium styles for each service - now wraps content */}
+                      <FocusAreaStyles visualType={area.visualType}>
+                        <FocusAreaContent area={area} />
+                      </FocusAreaStyles>
                     </div>
                   </motion.div>
 

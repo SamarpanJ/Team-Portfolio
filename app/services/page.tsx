@@ -37,6 +37,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
+import { ProjectAssessmentModal } from "@/components/project-assessment-modal"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -63,7 +64,9 @@ const PricingCalculator = React.memo(() => {
   const [estimatedDays, setEstimatedDays] = React.useState(0)
   const [selectedDays, setSelectedDays] = React.useState(0)
   const [rushPrice, setRushPrice] = React.useState(0)
-  const [serviceAnswers, setServiceAnswers] = React.useState<{[key: string]: {[key: string]: string}}>({})
+  const [projectAssessmentAnswers, setProjectAssessmentAnswers] = React.useState<{[key: string]: string}>({})
+  const [showProjectAssessmentModal, setShowProjectAssessmentModal] = React.useState(false)
+  const [isProjectAssessmentComplete, setIsProjectAssessmentComplete] = React.useState(false)
   const isInitialLoad = React.useRef(true)
 
   // Base hourly rates
@@ -245,83 +248,141 @@ const PricingCalculator = React.memo(() => {
     { 
       id: 'web-app', 
       name: 'Custom Web Application', 
-      estimatedHours: 160, 
+      estimatedHours: 120, 
       description: 'Full-stack web development with modern frameworks',
-      type: 'website' as const,
-      hasAssessment: true
+      type: 'website' as const
     },
     { 
       id: 'ai-agents', 
       name: 'AI Agents & ML Integration', 
-      estimatedHours: 180, 
+      estimatedHours: 100, 
       description: 'Custom AI solutions and LLM integration',
-      type: 'ai' as const,
-      hasAssessment: true
+      type: 'ai' as const
     },
     { 
       id: 'database', 
       name: 'Database Design & Setup', 
-      estimatedHours: 60, 
+      estimatedHours: 30, 
       description: 'Database architecture and optimization',
-      type: 'website' as const,
-      hasAssessment: true
+      type: 'website' as const
     },
     { 
       id: 'cloud-hosting', 
       name: 'Cloud Deployment & Hosting', 
-      estimatedHours: 40, 
+      estimatedHours: 24, 
       description: 'Production deployment and infrastructure',
-      type: 'website' as const,
-      hasAssessment: false
+      type: 'website' as const
     },
     { 
       id: 'ecommerce', 
       name: 'E-commerce Platform', 
-      estimatedHours: 220, 
+      estimatedHours: 150, 
       description: 'Complete online store with payment integration',
-      type: 'website' as const,
-      hasAssessment: true
+      type: 'website' as const
     },
     { 
       id: 'api-development', 
       name: 'API Development', 
-      estimatedHours: 100, 
+      estimatedHours: 60, 
       description: 'RESTful APIs and third-party integrations',
-      type: 'website' as const,
-      hasAssessment: false
+      type: 'website' as const
     }
   ]
 
   const addOns = [
-    { id: 'real-time', name: 'Real-time Features', hours: 80, description: 'Live updates and notifications', type: 'website' as const },
-    { id: 'security', name: 'Security Implementation', hours: 60, description: 'Advanced security measures', type: 'website' as const, hasAssessment: true },
-    { id: 'analytics', name: 'Analytics Dashboard', hours: 70, description: 'Business intelligence tools', type: 'website' as const },
-    { id: 'mobile-responsive', name: 'Mobile Optimization', hours: 40, description: 'Mobile-first responsive design', type: 'website' as const },
-    { id: 'seo', name: 'SEO Optimization', hours: 30, description: 'Search engine optimization', type: 'website' as const },
-    { id: 'performance', name: 'Performance Optimization', hours: 50, description: 'Speed and efficiency improvements', type: 'website' as const }
+    { id: 'real-time', name: 'Real-time Features', hours: 50, description: 'Live updates and notifications', type: 'website' as const },
+    { id: 'security', name: 'Security Implementation', hours: 40, description: 'Advanced security measures', type: 'website' as const },
+    { id: 'analytics', name: 'Analytics Dashboard', hours: 45, description: 'Business intelligence tools', type: 'website' as const },
+    { id: 'mobile-responsive', name: 'Mobile Optimization', hours: 25, description: 'Mobile-first responsive design', type: 'website' as const },
+    { id: 'seo', name: 'SEO Optimization', hours: 20, description: 'Search engine optimization', type: 'website' as const },
+    { id: 'performance', name: 'Performance Optimization', hours: 30, description: 'Speed and efficiency improvements', type: 'website' as const }
   ]
 
-  // Calculate complexity multiplier based on questionnaire answers
+  // Calculate complexity multiplier based on project assessment answers
   const getComplexityMultiplier = React.useCallback((serviceId: string): number => {
-    const answers = serviceAnswers[serviceId]
-    if (!answers) return 1.0
+    if (!isProjectAssessmentComplete) return 1.0
 
-    const questionnaire = questionnaires[serviceId as keyof typeof questionnaires]
-    if (!questionnaire) return 1.0
+    let multiplier = 1.0
+    
+    // Apply complexity based on specific service and assessment answers
+    const service = services.find(s => s.id === serviceId)
+    if (!service) return 1.0
 
-    let totalMultiplier = 1.0
-    questionnaire.questions.forEach(question => {
-      const answer = answers[question.id]
-      if (answer) {
-        const option = question.options.find(opt => opt.value === answer)
-        if (option) {
-          totalMultiplier *= option.multiplier
-        }
-      }
-    })
+    // Web Application complexity
+    if (serviceId === 'web-app') {
+      const pages = projectAssessmentAnswers['web_pages']
+      const features = projectAssessmentAnswers['web_features']
+      
+      if (pages === '1-5') multiplier *= 1.0
+      else if (pages === '6-15') multiplier *= 1.2
+      else if (pages === '16-50') multiplier *= 1.5
+      else if (pages === '50+') multiplier *= 2.0
 
-    return totalMultiplier
-  }, [serviceAnswers])
+      if (features === 'basic') multiplier *= 1.0
+      else if (features === 'standard') multiplier *= 1.3
+      else if (features === 'advanced') multiplier *= 1.6
+      else if (features === 'enterprise') multiplier *= 2.0
+    }
+
+    // AI Agents complexity
+    if (serviceId === 'ai-agents') {
+      const aiType = projectAssessmentAnswers['ai_type']
+      const dataVolume = projectAssessmentAnswers['ai_data_volume']
+      
+      if (aiType === 'simple_bot') multiplier *= 1.0
+      else if (aiType === 'smart_assistant') multiplier *= 1.4
+      else if (aiType === 'data_processor') multiplier *= 1.7
+      else if (aiType === 'custom_ai') multiplier *= 2.2
+
+      if (dataVolume === 'small') multiplier *= 1.0
+      else if (dataVolume === 'medium') multiplier *= 1.3
+      else if (dataVolume === 'large') multiplier *= 1.6
+      else if (dataVolume === 'enterprise') multiplier *= 2.0
+    }
+
+    // Database complexity
+    if (serviceId === 'database') {
+      const dbSize = projectAssessmentAnswers['db_size']
+      const dbComplexity = projectAssessmentAnswers['db_complexity']
+      
+      if (dbSize === 'small') multiplier *= 1.0
+      else if (dbSize === 'medium') multiplier *= 1.3
+      else if (dbSize === 'large') multiplier *= 1.6
+      else if (dbSize === 'enterprise') multiplier *= 2.0
+
+      if (dbComplexity === 'simple') multiplier *= 1.0
+      else if (dbComplexity === 'moderate') multiplier *= 1.2
+      else if (dbComplexity === 'complex') multiplier *= 1.5
+    }
+
+    // E-commerce complexity
+    if (serviceId === 'ecommerce') {
+      const products = projectAssessmentAnswers['ecommerce_products']
+      const features = projectAssessmentAnswers['ecommerce_features']
+      
+      if (products === '1-50') multiplier *= 1.0
+      else if (products === '51-500') multiplier *= 1.3
+      else if (products === '501-5000') multiplier *= 1.6
+      else if (products === '5000+') multiplier *= 2.0
+
+      if (features === 'basic') multiplier *= 1.0
+      else if (features === 'standard') multiplier *= 1.3
+      else if (features === 'advanced') multiplier *= 1.7
+      else if (features === 'marketplace') multiplier *= 2.2
+    }
+
+    // Cloud hosting scales with overall project size
+    if (serviceId === 'cloud-hosting') {
+      const traffic = projectAssessmentAnswers['expected_traffic']
+      
+      if (traffic === 'low') multiplier *= 1.0
+      else if (traffic === 'medium') multiplier *= 1.4
+      else if (traffic === 'high') multiplier *= 1.8
+      else if (traffic === 'enterprise') multiplier *= 2.5
+    }
+
+    return multiplier
+  }, [projectAssessmentAnswers, isProjectAssessmentComplete, services])
 
   // Calculate pricing based on hourly rates and project type
   const calculatePricing = React.useCallback(() => {
@@ -370,10 +431,16 @@ const PricingCalculator = React.memo(() => {
     const estimatedDaysValue = Math.ceil(totalHours / REGULAR_HOURS_PER_DAY)
     setEstimatedDays(estimatedDaysValue)
     
-    // Set selected days to estimated days by default if not set or exceeds estimated
-    if (selectedDays === 0 || selectedDays > estimatedDaysValue) {
-      setSelectedDays(estimatedDaysValue)
-    }
+    // Only set selected days to estimated days if no valid selection exists
+    // This preserves manual slider adjustments
+    setSelectedDays(prev => {
+      // If previous value is 0 or outside valid range, use estimated days
+      if (prev === 0 || prev > estimatedDaysValue) {
+        return estimatedDaysValue
+      }
+      // Otherwise preserve the user's manual selection
+      return prev
+    })
 
     setEstimatedPrice(basePrice)
 
@@ -502,19 +569,56 @@ const PricingCalculator = React.memo(() => {
   }, [calculatePricing])
 
   const toggleService = React.useCallback((serviceId: string) => {
-    setSelectedServices(prev => 
-      prev.includes(serviceId) 
+    setSelectedServices(prev => {
+      const newSelection = prev.includes(serviceId) 
         ? prev.filter(id => id !== serviceId)
         : [...prev, serviceId]
-    )
+      
+      // Reset assessment when selection changes
+      if (newSelection.length !== prev.length) {
+        setIsProjectAssessmentComplete(false)
+        setProjectAssessmentAnswers({})
+      }
+      
+      return newSelection
+    })
   }, [])
 
   const toggleAddOn = React.useCallback((addOnId: string) => {
-    setSelectedAddOns(prev => 
-      prev.includes(addOnId)
+    setSelectedAddOns(prev => {
+      const newSelection = prev.includes(addOnId) 
         ? prev.filter(id => id !== addOnId)
         : [...prev, addOnId]
-    )
+      
+      // Reset assessment when selection changes
+      if (newSelection.length !== prev.length) {
+        setIsProjectAssessmentComplete(false)
+        setProjectAssessmentAnswers({})
+      }
+      
+      return newSelection
+    })
+  }, [])
+
+
+
+  const handleStartProjectAssessment = React.useCallback(() => {
+    setShowProjectAssessmentModal(true)
+  }, [])
+
+  const handleProjectAssessmentSubmit = React.useCallback((answers: Record<string, string>) => {
+    console.log('Project assessment answers:', answers)
+    
+    // Store the answers for pricing calculation
+    setProjectAssessmentAnswers(answers)
+    setIsProjectAssessmentComplete(true)
+    
+    // Close modal
+    setShowProjectAssessmentModal(false)
+  }, [])
+
+  const handleProjectAssessmentClose = React.useCallback(() => {
+    setShowProjectAssessmentModal(false)
   }, [])
 
   const getTierColor = React.useCallback((tier: string) => {
@@ -543,6 +647,16 @@ const PricingCalculator = React.memo(() => {
       setSelectedDays(newDays)
     }
   }, [minDays, estimatedDays])
+
+  // Check if project has selected services and needs assessment
+  const needsAssessment = React.useMemo(() => {
+    return (selectedServices.length > 0 || selectedAddOns.length > 0) && !isProjectAssessmentComplete
+  }, [selectedServices.length, selectedAddOns.length, isProjectAssessmentComplete])
+
+  // Check if ready for quote
+  const readyForQuote = React.useMemo(() => {
+    return (selectedServices.length > 0 || selectedAddOns.length > 0) && isProjectAssessmentComplete
+  }, [selectedServices.length, selectedAddOns.length, isProjectAssessmentComplete])
 
 
 
@@ -669,7 +783,7 @@ const PricingCalculator = React.memo(() => {
                             
                             <p className="text-gray-300 mb-4 leading-relaxed">{service.description}</p>
                             
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center mb-4">
                               <div className="space-y-1">
                                 <div className="text-gray-300 text-sm">
                                   {Math.round(adjustedHours)} hours
@@ -696,6 +810,8 @@ const PricingCalculator = React.memo(() => {
                                 )}
                               </div>
                             </div>
+                            
+
                           </div>
                         </div>
                       </div>
@@ -1001,17 +1117,61 @@ const PricingCalculator = React.memo(() => {
 
                   {/* Enhanced CTA Button */}
                   {totalEstimatedPrice > 0 ? (
-                    <motion.button
-                      className="w-full py-4 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 text-white font-semibold rounded-xl transition-all duration-300 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700 hover:shadow-xl hover:shadow-blue-500/30 flex items-center justify-center gap-3 text-lg transform hover:scale-[1.02]"
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                    >
-                      <Rocket className="w-5 h-5" />
-                      Get Detailed Quote
-                    </motion.button>
+                    readyForQuote ? (
+                      <motion.button
+                        onClick={() => {
+                          // Navigate to contact page with pre-filled data
+                          const selectedServiceNames = selectedServices.map(id => 
+                            services.find(s => s.id === id)?.name
+                          ).filter(Boolean).join(', ')
+                          
+                          const selectedAddOnNames = selectedAddOns.map(id => 
+                            addOns.find(a => a.id === id)?.name
+                          ).filter(Boolean).join(', ')
+                          
+                          const projectDetails = `Selected Services: ${selectedServiceNames}${selectedAddOnNames ? `\nAdd-ons: ${selectedAddOnNames}` : ''}\nEstimated Total: $${totalEstimatedPrice.toLocaleString()}\nTimeline: ${selectedDays} days`
+                          
+                          window.location.href = `/contact?project=${encodeURIComponent(projectDetails)}&amount=${totalEstimatedPrice}`
+                        }}
+                        className="w-full py-4 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 text-white font-semibold rounded-xl transition-all duration-300 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700 hover:shadow-xl hover:shadow-blue-500/30 flex items-center justify-center gap-3 text-lg transform hover:scale-[1.02]"
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <Rocket className="w-5 h-5" />
+                        Get Detailed Quote
+                      </motion.button>
+                    ) : needsAssessment ? (
+                      <motion.button
+                        onClick={handleStartProjectAssessment}
+                        className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-semibold rounded-xl transition-all duration-300 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 hover:shadow-xl hover:shadow-amber-500/30 flex items-center justify-center gap-3 text-lg transform hover:scale-[1.02]"
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <Lightbulb className="w-5 h-5" />
+                        Start Project Assessment
+                      </motion.button>
+                    ) : (
+                      <motion.div
+                        className="w-full p-6 bg-gradient-to-r from-gray-500/10 to-gray-600/10 border border-gray-500/30 rounded-xl text-center"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <div className="flex items-center justify-center gap-3 mb-3">
+                          <Settings className="w-5 h-5 text-gray-400" />
+                          <span className="text-gray-400 font-semibold">Services Selected</span>
+                        </div>
+                        <p className="text-sm text-gray-300 leading-relaxed">
+                          Assessment complete! Your pricing has been calculated based on your project requirements.
+                        </p>
+                      </motion.div>
+                    )
                   ) : (
                     <motion.div 
                       className="text-center p-8 text-gray-500"
@@ -1065,6 +1225,19 @@ const PricingCalculator = React.memo(() => {
           </div>
         </div>
       </div>
+
+      {/* Project Assessment Modal */}
+      {showProjectAssessmentModal && (
+        <ProjectAssessmentModal
+          selectedServices={selectedServices}
+          selectedAddOns={selectedAddOns}
+          services={services}
+          addOns={addOns}
+          isOpen={showProjectAssessmentModal}
+          onClose={handleProjectAssessmentClose}
+          onSubmit={handleProjectAssessmentSubmit}
+        />
+      )}
     </>
   )
 })

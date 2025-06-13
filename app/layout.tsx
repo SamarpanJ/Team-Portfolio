@@ -6,6 +6,7 @@ import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { ScrollRestoration } from "@/components/scroll-restoration"
+import { ErrorHandler } from "@/components/error-handler"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body className={`${inter.className} bg-black text-white min-h-screen antialiased overflow-x-hidden`}>
+        <ErrorHandler />
         <ScrollRestoration />
         <div className="relative overflow-x-hidden">
           {/* Enhanced background pattern */}
