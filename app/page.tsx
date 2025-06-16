@@ -267,7 +267,7 @@ export default function HomePage() {
                   
                   {/* Get Started Button */}
                   <div className="mt-auto">
-                    <Link href={`/services?service=${getServiceSlugFromTitle(service.title)}#calculator`}>
+                    <Link href="/contact">
                       <motion.button
                         className={`w-full px-4 py-3 rounded-xl bg-gradient-to-r ${service.color} text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-current/25 group-hover:scale-105 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100`}
                         whileHover={{ scale: 1.02 }}
