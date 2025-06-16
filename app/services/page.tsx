@@ -375,7 +375,7 @@ function ServicesPageContent() {
 
                   {/* Get Started Button */}
                   <div className="mt-auto">
-                    <Link href="/contact">
+                    <Link href={`/contact?service=${encodeURIComponent(service.title)}&description=${encodeURIComponent(service.description)}&features=${encodeURIComponent(service.features.join(', '))}`}>
                       <motion.button
                         className={`w-full px-4 py-3 rounded-xl bg-gradient-to-r ${service.color} text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-current/25 group-hover:scale-105 flex items-center justify-center gap-2`}
                         whileHover={{ scale: 1.02 }}
@@ -701,7 +701,7 @@ function ServicesPageContent() {
                      <div 
                        className="mt-auto"
                      >
-                      <Link href="/contact">
+                      <Link href={`/contact?service=${encodeURIComponent(pkg.name)}&description=${encodeURIComponent(pkg.description)}&features=${encodeURIComponent(pkg.features.join(', '))}&price=${encodeURIComponent(pkg.price)}`}>
                         <motion.button
                           className={`w-full px-6 py-3.5 rounded-full font-semibold transition-all duration-300 relative overflow-hidden group/btn backdrop-blur-sm ${
                             isPopular 

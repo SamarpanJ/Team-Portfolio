@@ -4,7 +4,8 @@ import type React from "react"
 
 import { motion, AnimatePresence } from "framer-motion"
 import { Mail, Github, Linkedin, Send, MapPin, Phone, Clock, MessageSquare, Calendar, Users, Zap, ChevronDown, Check, Terminal, Code, Globe, Smartphone, Brain, Cpu, Settings, Stars } from "lucide-react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, Suspense } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import { Footer } from "@/components/footer"
 
 const fadeInUp = {
@@ -33,7 +34,10 @@ const staggerContainer = {
   },
 }
 
-export default function ContactPage() {
+function ContactPageContent() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -44,6 +48,62 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isServiceDropdownOpen, setIsServiceDropdownOpen] = useState(false)
   const formRef = useRef<HTMLDivElement>(null)
+
+  // Pre-fill form based on query parameters
+  useEffect(() => {
+    const serviceName = searchParams.get('service')
+    const serviceDescription = searchParams.get('description')
+    const serviceFeatures = searchParams.get('features')
+    const servicePrice = searchParams.get('price')
+
+    if (serviceName && serviceName.trim()) {
+      // Map service name to dropdown value
+      let serviceValue = ""
+      const serviceLower = serviceName.toLowerCase()
+      
+      if (serviceLower.includes('web') || serviceLower.includes('full-stack')) {
+        serviceValue = "web-development"
+      } else if (serviceLower.includes('ai') || serviceLower.includes('intelligent')) {
+        serviceValue = "ai-solutions"
+      } else if (serviceLower.includes('software') || serviceLower.includes('custom')) {
+        serviceValue = "software-development"
+      } else if (serviceLower.includes('consultation') || serviceLower.includes('expert')) {
+        serviceValue = "consulting"
+      } else if (serviceLower.includes('cloud') || serviceLower.includes('infrastructure') || serviceLower.includes('database') || serviceLower.includes('e-commerce') || serviceLower.includes('ecommerce')) {
+        serviceValue = "other"
+      } else {
+        serviceValue = "other"
+      }
+
+      // Build pre-filled message
+      let preFilledMessage = `Hi! I'm interested in ${serviceName}.`
+      
+      if (serviceDescription && serviceDescription.trim()) {
+        preFilledMessage += `\n\nService Details: ${serviceDescription}`
+      }
+      
+      if (serviceFeatures && serviceFeatures.trim()) {
+        preFilledMessage += `\n\nKey Features: ${serviceFeatures}`
+      }
+      
+      if (servicePrice && servicePrice.trim()) {
+        preFilledMessage += `\n\nPackage: ${servicePrice}`
+      }
+      
+      preFilledMessage += `\n\nI would like to discuss:\n- Project timeline\n- Specific requirements\n- Budget and next steps\n\nPlease let me know when we can schedule a consultation.`
+
+      setFormData(prev => ({
+        ...prev,
+        service: serviceValue,
+        message: preFilledMessage
+      }))
+
+      // Clean URL after pre-filling to remove query params
+      setTimeout(() => {
+        router.replace('/contact')
+      }, 2000)
+    }
+  }, [searchParams, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -511,5 +571,15 @@ export default function ContactPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+    </div>}>
+      <ContactPageContent />
+    </Suspense>
   )
 }
