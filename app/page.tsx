@@ -199,22 +199,7 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        {/* Floating Elements - Hide on small screens to prevent overflow */}
-        <motion.div
-          className="absolute top-20 left-10 w-3 h-3 bg-blue-400 rounded-full opacity-60 hidden md:block"
-          animate={{ y: [-20, 20, -20], x: [-10, 10, -10] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-32 right-16 w-2 h-2 bg-purple-400 rounded-full opacity-40 hidden md:block"
-          animate={{ y: [20, -20, 20], x: [10, -10, 10] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.div
-          className="absolute top-1/3 right-20 w-1 h-1 bg-cyan-400 rounded-full opacity-60 hidden md:block"
-          animate={{ scale: [0.5, 1.5, 0.5], opacity: [0.3, 0.8, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
+
       </section>
 
       {/* Services Section */}

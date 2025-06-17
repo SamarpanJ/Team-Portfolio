@@ -135,59 +135,59 @@ function ServicesPageContent() {
 
   const servicePackages = [
     {
-      name: "Expert Consultation",
-      description: "Premium one-on-one consulting sessions with our senior technology experts for strategic guidance",
-      price: "$100/hour",
+      name: "Mini Launch",
+      description: "A sleek one-page website to give your brand a strong start",
+      price: "Starting at $350",
       features: [
-        "Architecture review & planning",
-        "Technology stack consultation", 
-        "Code review & optimization",
-        "Strategic technology roadmap",
-        "Best practices guidance"
+        "Custom responsive design",
+        "Mobile-first & fast-loading",
+        "Basic SEO setup",
+        "Contact/lead form integration",
+        "Hosting & domain setup support"
       ],
-      ideal: "CTOs, Tech leads, Enterprises",
-      color: "from-amber-500 to-orange-500"
-    },
-    {
-      name: "Starter Package",
-      description: "Perfect for small businesses and startups looking to establish their digital presence",
-      price: "Starting at $1,500",
-      features: [
-        "Basic web application",
-        "Responsive design",
-        "Basic API integration",
-        "Database setup and configuration",
-        "1 month support"
-      ],
-      ideal: "Small businesses, MVPs",
+      ideal: "Portfolios, personal brands, landing pages",
       color: "from-blue-500 to-cyan-500"
     },
     {
-      name: "Professional Package",
-      description: "Comprehensive solution for growing businesses requiring advanced features and integrations",
-      price: "Starting at $4,500",
+      name: "Starter Package",
+      description: "A full-featured multi-page site with backend essentials",
+      price: "Starting at $1,020",
       features: [
-        "Advanced web applications",
-        "AI agent integration",
-        "Cloud deployment",
-        "Security implementation",
-        "3 months support"
+        "Custom multi-page design",
+        "CMS/backend-ready structure",
+        "SEO, analytics & security setup",
+        "Optimized for all devices",
+        "1-month post-launch support"
       ],
-      ideal: "Growing companies, SaaS platforms",
+      ideal: "Service providers, small businesses, teams",
+      color: "from-green-500 to-emerald-500"
+    },
+    {
+      name: "Growth Package",
+      description: "A smart, scalable platform with intelligent features",
+      price: "Starting at $2,700",
+      features: [
+        "Includes everything in Starter",
+        "AI-enhanced forms & smart user flows",
+        "Admin panel for easy content control",
+        "Performance-optimized backend",
+        "3-month support with feature iterations"
+      ],
+      ideal: "SaaS tools, smart platforms, fast-growing products",
       color: "from-purple-500 to-pink-500"
     },
     {
       name: "Enterprise Package",
-      description: "Complete digital transformation solution with cutting-edge technologies and ongoing support",
-      price: "Starting at $9,000",
+      description: "Systems built for scale, automation, and team control",
+      price: "Starting at $5,400",
       features: [
-        "Full-stack solution",
-        "Custom AI agents",
-        "Enterprise security",
-        "Business intelligence",
-        "6 months support"
+        "Includes everything in Growth",
+        "Smart workflows & internal automations",
+        "Role-based dashboards & control panels",
+        "Audit trails, insights & data security",
+        "6-month support with dedicated handling"
       ],
-      ideal: "Large organizations, complex systems",
+      ideal: "Funded startups, B2B tools, operational teams",
       color: "from-green-500 to-emerald-500"
     }
   ]
@@ -534,8 +534,8 @@ function ServicesPageContent() {
             viewport={{ once: true }}
           >
             {servicePackages.map((pkg, index) => {
-              const isPopular = index === 2;
-              const isConsultation = index === 0;
+              const isPopular = index === 2; // Growth Package
+              const isMiniLaunch = index === 0;
               const isEnterprise = index === 3;
               
               return (
@@ -546,8 +546,8 @@ function ServicesPageContent() {
                        ? 'bg-gradient-to-br from-black/98 via-purple-950/90 to-black/98 border-purple-400/20 shadow-2xl shadow-purple-500/10 z-20' 
                        : isEnterprise
                        ? 'bg-gradient-to-br from-black/98 via-emerald-950/90 to-black/98 border-emerald-400/20 shadow-xl shadow-emerald-500/10 z-10'
-                       : isConsultation
-                       ? 'bg-gradient-to-br from-black/98 via-amber-950/90 to-black/98 border-amber-400/20 shadow-lg shadow-amber-500/10'
+                       : isMiniLaunch
+                       ? 'bg-gradient-to-br from-black/98 via-blue-950/90 to-black/98 border-blue-400/20 shadow-lg shadow-blue-500/10'
                        : 'bg-gradient-to-br from-black/98 via-gray-950/90 to-black/98 border-gray-500/20 shadow-md hover:border-gray-400/30'
                    }`}
                    whileHover={{ 
@@ -564,8 +564,8 @@ function ServicesPageContent() {
                         ? 'shadow-[inset_0_0_0_1px_rgba(168,85,247,0.3)] group-hover:shadow-[inset_0_0_0_1px_rgba(168,85,247,0.5)]' 
                         : isEnterprise
                         ? 'shadow-[inset_0_0_0_1px_rgba(34,197,94,0.3)] group-hover:shadow-[inset_0_0_0_1px_rgba(34,197,94,0.5)]'
-                        : isConsultation
-                        ? 'shadow-[inset_0_0_0_1px_rgba(245,158,11,0.3)] group-hover:shadow-[inset_0_0_0_1px_rgba(245,158,11,0.5)]'
+                        : isMiniLaunch
+                        ? 'shadow-[inset_0_0_0_1px_rgba(59,130,246,0.3)] group-hover:shadow-[inset_0_0_0_1px_rgba(59,130,246,0.5)]'
                         : 'shadow-[inset_0_0_0_1px_rgba(75,85,99,0.2)] group-hover:shadow-[inset_0_0_0_1px_rgba(75,85,99,0.4)]'
                     }`} />
                     
@@ -575,8 +575,8 @@ function ServicesPageContent() {
                         ? 'shadow-[0_0_0_1px_rgba(168,85,247,0.2),0_0_10px_rgba(168,85,247,0.15),0_0_20px_rgba(168,85,247,0.1),0_0_40px_rgba(168,85,247,0.06)] group-hover:shadow-[0_0_0_1px_rgba(168,85,247,0.4),0_0_16px_rgba(168,85,247,0.25),0_0_32px_rgba(168,85,247,0.18),0_0_64px_rgba(168,85,247,0.12)]' 
                         : isEnterprise
                         ? 'shadow-[0_0_0_1px_rgba(34,197,94,0.2),0_0_10px_rgba(34,197,94,0.15),0_0_20px_rgba(34,197,94,0.1),0_0_40px_rgba(34,197,94,0.06)] group-hover:shadow-[0_0_0_1px_rgba(34,197,94,0.4),0_0_16px_rgba(34,197,94,0.25),0_0_32px_rgba(34,197,94,0.18),0_0_64px_rgba(34,197,94,0.12)]'
-                        : isConsultation
-                        ? 'shadow-[0_0_0_1px_rgba(245,158,11,0.2),0_0_10px_rgba(245,158,11,0.15),0_0_20px_rgba(245,158,11,0.1),0_0_40px_rgba(245,158,11,0.06)] group-hover:shadow-[0_0_0_1px_rgba(245,158,11,0.4),0_0_16px_rgba(245,158,11,0.25),0_0_32px_rgba(245,158,11,0.18),0_0_64px_rgba(245,158,11,0.12)]'
+                        : isMiniLaunch
+                        ? 'shadow-[0_0_0_1px_rgba(59,130,246,0.2),0_0_10px_rgba(59,130,246,0.15),0_0_20px_rgba(59,130,246,0.1),0_0_40px_rgba(59,130,246,0.06)] group-hover:shadow-[0_0_0_1px_rgba(59,130,246,0.4),0_0_16px_rgba(59,130,246,0.25),0_0_32px_rgba(59,130,246,0.18),0_0_64px_rgba(59,130,246,0.12)]'
                         : 'shadow-[0_0_0_1px_rgba(75,85,99,0.15),0_0_8px_rgba(75,85,99,0.1),0_0_16px_rgba(75,85,99,0.06)] group-hover:shadow-[0_0_0_1px_rgba(75,85,99,0.3),0_0_12px_rgba(75,85,99,0.15),0_0_24px_rgba(75,85,99,0.1)]'
                     }`} />
                   </div>
@@ -642,7 +642,7 @@ function ServicesPageContent() {
                         className={`text-xl font-bold mb-3 transition-colors duration-300 ${
                           isPopular ? 'text-white group-hover:text-purple-200' :
                           isEnterprise ? 'text-white group-hover:text-emerald-200' :
-                          isConsultation ? 'text-white group-hover:text-amber-200' :
+                          isMiniLaunch ? 'text-white group-hover:text-blue-200' :
                           'text-white group-hover:text-blue-200'
                         }`}
                       >
@@ -681,7 +681,7 @@ function ServicesPageContent() {
                           <CheckCircle2 className={`w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-all duration-300 ${
                             isPopular ? 'text-purple-400' :
                             isEnterprise ? 'text-emerald-400' :
-                            isConsultation ? 'text-amber-400' :
+                            isMiniLaunch ? 'text-blue-400' :
                             'text-green-400'
                           }`} />
                           <span className="text-sm text-gray-300 group-hover:text-white transition-colors duration-300">{feature}</span>
@@ -708,8 +708,8 @@ function ServicesPageContent() {
                               ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/40 border border-purple-300/20' 
                               : isEnterprise
                               ? 'bg-gradient-to-r from-emerald-500 to-emerald-400 text-white hover:from-emerald-600 hover:to-emerald-500 shadow-lg shadow-emerald-500/30 border border-emerald-300/20'
-                              : isConsultation
-                              ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-white hover:from-amber-600 hover:to-amber-500 shadow-lg shadow-amber-500/30 border border-amber-300/20'
+                              : isMiniLaunch
+                              ? 'bg-gradient-to-r from-blue-500 to-blue-400 text-white hover:from-blue-600 hover:to-blue-500 shadow-lg shadow-blue-500/30 border border-blue-300/20'
                               : `bg-gradient-to-r ${pkg.color} text-white hover:shadow-lg hover:shadow-current/20 border border-white/10`
                           }`}
                           whileHover={{ scale: 1.03 }}
@@ -736,6 +736,149 @@ function ServicesPageContent() {
                 </motion.div>
               );
             })}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Consultation Section */}
+      <section className="py-24 px-4 border-t border-gray-800/50 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/6 w-96 h-96 bg-gradient-to-r from-amber-500/8 to-orange-500/8 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/6 w-80 h-80 bg-gradient-to-r from-yellow-500/8 to-amber-500/8 rounded-full blur-3xl animate-pulse" />
+        </div>
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          <motion.div 
+            className="text-center mb-16" 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-amber-500/15 border border-amber-400/40 mb-6 backdrop-blur-xl"
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <Lightbulb className="w-4 h-4 text-amber-400" />
+              <span className="text-sm text-amber-300 font-medium uppercase tracking-widest">Expert Guidance</span>
+            </motion.div>
+            
+            <motion.h2 
+              className="text-4xl sm:text-5xl md:text-6xl font-light mb-6 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 bg-clip-text text-transparent"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              Consultation
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              Expert sessions to guide your product, tech, or AI strategy
+            </motion.p>
+          </motion.div>
+
+          {/* Consultation Card */}
+          <motion.div
+            className="max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <motion.div
+              className="relative rounded-3xl border bg-gradient-to-br from-black/98 via-amber-950/90 to-black/98 border-amber-400/20 shadow-2xl shadow-amber-500/20 backdrop-blur-xl group cursor-pointer"
+              whileHover={{ 
+                y: -12, 
+                scale: 1.02,
+                transition: { duration: 0.3, type: "spring", stiffness: 300 }
+              }}
+            >
+              {/* Premium Border Glow Effect */}
+              <div className="absolute inset-0 rounded-3xl pointer-events-none">
+                <div className="absolute inset-0 rounded-3xl shadow-[inset_0_0_0_1px_rgba(245,158,11,0.3)] group-hover:shadow-[inset_0_0_0_1px_rgba(245,158,11,0.5)] transition-all duration-700" />
+                <div className="absolute inset-0 rounded-3xl shadow-[0_0_0_1px_rgba(245,158,11,0.2),0_0_20px_rgba(245,158,11,0.15),0_0_40px_rgba(245,158,11,0.1),0_0_80px_rgba(245,158,11,0.06)] group-hover:shadow-[0_0_0_1px_rgba(245,158,11,0.4),0_0_32px_rgba(245,158,11,0.25),0_0_64px_rgba(245,158,11,0.18),0_0_128px_rgba(245,158,11,0.12)] transition-all duration-700" />
+              </div>
+
+              <div className="p-8 relative z-10">
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Briefcase className="w-8 h-8 text-white" />
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-amber-200 transition-colors duration-300">
+                    Expert Consultation
+                  </h3>
+                  
+                  <div className="mb-4">
+                    <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">Starting at</span>
+                  </div>
+
+                  <div className="text-4xl font-bold mb-4 bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                    $60/hour
+                  </div>
+                  
+                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
+                    Expert sessions to guide your product, tech, or AI strategy
+                  </p>
+                </div>
+
+                {/* Features Grid */}
+                <div className="grid md:grid-cols-2 gap-4 mb-8">
+                  {[
+                    "Product & architecture planning",
+                    "AI/LLM feature roadmap (no fluff)",
+                    "System & MVP evaluations", 
+                    "Workflow & scalability advice"
+                  ].map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-amber-400 group-hover:scale-110 transition-all duration-300" />
+                      <span className="text-sm text-gray-300 group-hover:text-white transition-colors duration-300">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Ideal For */}
+                <div className="text-center mb-8">
+                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-medium">Ideal For</div>
+                  <div className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors duration-300">
+                    Founders, CTOs, Product Managers
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <div className="text-center">
+                  <Link href="/contact?service=Expert%20Consultation&description=Expert%20sessions%20to%20guide%20your%20product%2C%20tech%2C%20or%20AI%20strategy&features=Product%20%26%20architecture%20planning%2C%20AI%2FLLM%20feature%20roadmap%2C%20System%20%26%20MVP%20evaluations%2C%20Workflow%20%26%20scalability%20advice&price=Starting%20at%20%2460%2Fhour">
+                    <motion.button
+                      className="px-8 py-4 rounded-full font-semibold transition-all duration-300 relative overflow-hidden group/btn backdrop-blur-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/40 border border-amber-300/20"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <span className="relative z-10 font-semibold">Schedule Consultation</span>
+                      <motion.div 
+                        className="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left rounded-full"
+                        whileHover={{ scale: 1 }}
+                      />
+                    </motion.button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Premium Shimmer Effect */}
+              <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-amber-500/5 to-transparent animate-shimmer" />
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
