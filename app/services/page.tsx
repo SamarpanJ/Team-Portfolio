@@ -1,7 +1,7 @@
 "use client"
 
 import React, { Suspense } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   Code,
   Brain,
@@ -323,31 +323,104 @@ function ServicesPageContent() {
             {coreServices.map((service, index) => (
               <motion.div
                 key={index}
-                className="dev-service-card p-4 sm:p-8 group transition-all duration-300 relative flex flex-col h-[480px]"
+                className="dev-service-card p-4 sm:p-8 group relative flex flex-col h-[480px]"
+                style={{ willChange: 'transform' }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -10, scale: 1.02 }}
+                whileHover={{ 
+                  y: -10, 
+                  scale: 1.02,
+                  transition: { 
+                    duration: 0.1, 
+                    ease: [0.23, 1, 0.32, 1],
+                    type: "tween"
+                  }
+                }}
+                animate={{ 
+                  y: 0, 
+                  scale: 1,
+                  transition: { 
+                    duration: 0.1, 
+                    ease: [0.23, 1, 0.32, 1],
+                    type: "tween"
+                  }
+                }}
               >
                 <div className="particle-overlay"></div>
                 <div className="grid-overlay"></div>
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                    <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${service.color} group-hover:scale-110 transition-transform duration-300`}>
+                    <motion.div 
+                      className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${service.color}`}
+                      style={{ willChange: 'transform' }}
+                      whileHover={{ 
+                        scale: 1.1,
+                        transition: { 
+                          duration: 0.1, 
+                          ease: [0.23, 1, 0.32, 1],
+                          type: "tween"
+                        }
+                      }}
+                      animate={{ 
+                        scale: 1,
+                        transition: { 
+                          duration: 0.1, 
+                          ease: [0.23, 1, 0.32, 1],
+                          type: "tween"
+                        }
+                      }}
+                    >
                       <div className="text-white">{service.icon}</div>
-                    </div>
+                    </motion.div>
                     <div className="flex-1">
-                      <h3 className="text-lg sm:text-xl font-semibold text-white group-hover:text-purple-300 transition-colors">
+                      <motion.h3 
+                        className="text-lg sm:text-xl font-semibold text-white"
+                        whileHover={{ 
+                          color: "#d8b4fe",
+                          transition: { 
+                            duration: 0.1, 
+                            ease: [0.23, 1, 0.32, 1],
+                            type: "tween"
+                          }
+                        }}
+                        animate={{ 
+                          color: "#ffffff",
+                          transition: { 
+                            duration: 0.1, 
+                            ease: [0.23, 1, 0.32, 1],
+                            type: "tween"
+                          }
+                        }}
+                      >
                         {service.title}
-                      </h3>
+                      </motion.h3>
                     </div>
                   </div>
                   
                   <div className="flex-grow flex flex-col">
-                    <p className="text-gray-400 leading-relaxed mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors text-sm sm:text-base">
+                    <motion.p 
+                      className="text-gray-400 leading-relaxed mb-4 sm:mb-6 text-sm sm:text-base"
+                      whileHover={{ 
+                        color: "#d1d5db",
+                        transition: { 
+                          duration: 0.1, 
+                          ease: [0.23, 1, 0.32, 1],
+                          type: "tween"
+                        }
+                      }}
+                      animate={{ 
+                        color: "#9ca3af",
+                        transition: { 
+                          duration: 0.1, 
+                          ease: [0.23, 1, 0.32, 1],
+                          type: "tween"
+                        }
+                      }}
+                    >
                       {service.description}
-                    </p>
+                    </motion.p>
 
                     <div className="mb-4 sm:mb-6 flex-grow">
                       <h4 className="text-xs sm:text-sm font-medium text-white mb-2 sm:mb-3 uppercase tracking-wider font-mono">Key Features:</h4>
@@ -363,12 +436,28 @@ function ServicesPageContent() {
 
                     <div className="flex flex-wrap gap-1 mb-6">
                       {service.deliverables.map((deliverable, delIndex) => (
-                        <span
+                        <motion.span
                           key={delIndex}
-                          className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded text-xs border border-gray-700/30 font-mono group-hover:border-purple-500/30 transition-colors"
+                          className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded text-xs border border-gray-700/30 font-mono"
+                          whileHover={{ 
+                            borderColor: "rgba(168, 85, 247, 0.3)",
+                            transition: { 
+                              duration: 0.1, 
+                              ease: [0.23, 1, 0.32, 1],
+                              type: "tween"
+                            }
+                          }}
+                          animate={{ 
+                            borderColor: "rgba(55, 65, 81, 0.3)",
+                            transition: { 
+                              duration: 0.1, 
+                              ease: [0.23, 1, 0.32, 1],
+                              type: "tween"
+                            }
+                          }}
                         >
                           {deliverable}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>
@@ -377,13 +466,51 @@ function ServicesPageContent() {
                   <div className="mt-auto">
                     <Link href={`/contact?service=${encodeURIComponent(service.title)}&description=${encodeURIComponent(service.description)}&features=${encodeURIComponent(service.features.join(', '))}`}>
                       <motion.button
-                        className={`w-full px-4 py-3 rounded-xl bg-gradient-to-r ${service.color} text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-current/25 group-hover:scale-105 flex items-center justify-center gap-2`}
-                        whileHover={{ scale: 1.02 }}
+                        className={`w-full px-4 py-3 rounded-xl bg-gradient-to-r ${service.color} text-white font-medium text-sm flex items-center justify-center gap-2`}
+                        style={{ willChange: 'transform' }}
+                        whileHover={{ 
+                          scale: 1.02,
+                          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.25)",
+                          transition: { 
+                            duration: 0.1, 
+                            ease: [0.23, 1, 0.32, 1],
+                            type: "tween"
+                          }
+                        }}
+                        animate={{ 
+                          scale: 1,
+                          boxShadow: "0 0px 0px rgba(0, 0, 0, 0)",
+                          transition: { 
+                            duration: 0.1, 
+                            ease: [0.23, 1, 0.32, 1],
+                            type: "tween"
+                          }
+                        }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <Rocket className="w-4 h-4" />
                         Get Started
-                        <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <motion.div
+                          style={{ willChange: 'opacity' }}
+                          whileHover={{ 
+                            opacity: 1,
+                            transition: { 
+                              duration: 0.1, 
+                              ease: [0.23, 1, 0.32, 1],
+                              type: "tween"
+                            }
+                          }}
+                          animate={{ 
+                            opacity: 0,
+                            transition: { 
+                              duration: 0.1, 
+                              ease: [0.23, 1, 0.32, 1],
+                              type: "tween"
+                            }
+                          }}
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </motion.div>
                       </motion.button>
                     </Link>
                   </div>
@@ -541,7 +668,7 @@ function ServicesPageContent() {
               return (
                                  <motion.div
                    key={index}
-                   className={`relative rounded-2xl border transition-all duration-700 group cursor-pointer backdrop-blur-xl ${
+                   className={`relative rounded-2xl border transition-all duration-200 group cursor-pointer backdrop-blur-xl ${
                      isPopular 
                        ? 'bg-gradient-to-br from-black/98 via-purple-950/90 to-black/98 border-purple-400/20 shadow-2xl shadow-purple-500/10 z-20' 
                        : isEnterprise
@@ -553,13 +680,13 @@ function ServicesPageContent() {
                    whileHover={{ 
                      y: -8, 
                      scale: isPopular ? 1.05 : 1.03,
-                     transition: { duration: 0.3, type: "spring", stiffness: 300 }
+                     transition: { duration: 0.15, type: "tween", ease: "easeOut" }
                    }}
                 >
                   {/* Premium Border Glow Effect */}
                   <div className="absolute inset-0 rounded-2xl pointer-events-none">
                     {/* Inner subtle border */}
-                    <div className={`absolute inset-0 rounded-2xl transition-all duration-700 ${
+                    <div className={`absolute inset-0 rounded-2xl transition-all duration-200 ${
                       isPopular 
                         ? 'shadow-[inset_0_0_0_1px_rgba(168,85,247,0.3)] group-hover:shadow-[inset_0_0_0_1px_rgba(168,85,247,0.5)]' 
                         : isEnterprise
@@ -570,7 +697,7 @@ function ServicesPageContent() {
                     }`} />
                     
                     {/* Outer premium glow */}
-                    <div className={`absolute inset-0 rounded-2xl transition-all duration-700 ${
+                    <div className={`absolute inset-0 rounded-2xl transition-all duration-200 ${
                       isPopular 
                         ? 'shadow-[0_0_0_1px_rgba(168,85,247,0.2),0_0_10px_rgba(168,85,247,0.15),0_0_20px_rgba(168,85,247,0.1),0_0_40px_rgba(168,85,247,0.06)] group-hover:shadow-[0_0_0_1px_rgba(168,85,247,0.4),0_0_16px_rgba(168,85,247,0.25),0_0_32px_rgba(168,85,247,0.18),0_0_64px_rgba(168,85,247,0.12)]' 
                         : isEnterprise
@@ -639,7 +766,7 @@ function ServicesPageContent() {
                     {/* Package Header */}
                     <div className="text-center mb-5">
                       <h3 
-                        className={`text-xl font-bold mb-3 transition-colors duration-300 ${
+                        className={`text-xl font-bold mb-3 transition-colors duration-150 ${
                           isPopular ? 'text-white group-hover:text-purple-200' :
                           isEnterprise ? 'text-white group-hover:text-emerald-200' :
                           isMiniLaunch ? 'text-white group-hover:text-blue-200' :
@@ -663,7 +790,7 @@ function ServicesPageContent() {
                       </div>
                       
                       <p 
-                        className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300"
+                        className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-150"
                       >
                         {pkg.description}
                       </p>
@@ -678,13 +805,13 @@ function ServicesPageContent() {
                           key={featureIndex} 
                           className="flex items-center gap-3"
                         >
-                          <CheckCircle2 className={`w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-all duration-300 ${
+                          <CheckCircle2 className={`w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-all duration-150 ${
                             isPopular ? 'text-purple-400' :
                             isEnterprise ? 'text-emerald-400' :
                             isMiniLaunch ? 'text-blue-400' :
                             'text-green-400'
                           }`} />
-                          <span className="text-sm text-gray-300 group-hover:text-white transition-colors duration-300">{feature}</span>
+                          <span className="text-sm text-gray-300 group-hover:text-white transition-colors duration-150">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -694,7 +821,7 @@ function ServicesPageContent() {
                        className="text-center mb-4"
                      >
                        <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-medium">Ideal For</div>
-                       <div className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors duration-300">{pkg.ideal}</div>
+                       <div className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors duration-150">{pkg.ideal}</div>
                      </div>
 
                      {/* CTA Button - Perfectly Aligned */}
@@ -703,7 +830,7 @@ function ServicesPageContent() {
                      >
                       <Link href={`/contact?service=${encodeURIComponent(pkg.name)}&description=${encodeURIComponent(pkg.description)}&features=${encodeURIComponent(pkg.features.join(', '))}&price=${encodeURIComponent(pkg.price)}`}>
                         <motion.button
-                          className={`w-full px-6 py-3.5 rounded-full font-semibold transition-all duration-300 relative overflow-hidden group/btn backdrop-blur-sm ${
+                          className={`w-full px-6 py-3.5 rounded-full font-semibold transition-all duration-150 relative overflow-hidden group/btn backdrop-blur-sm ${
                             isPopular 
                               ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/40 border border-purple-300/20' 
                               : isEnterprise
@@ -727,7 +854,7 @@ function ServicesPageContent() {
 
                   {/* Premium Shimmer Effect */}
                   {(isPopular || isEnterprise) && (
-                    <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                    <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                       <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${
                         isPopular ? 'from-transparent via-purple-500/5 to-transparent' : 'from-transparent via-emerald-500/5 to-transparent'
                       } animate-shimmer`} />
@@ -801,7 +928,7 @@ function ServicesPageContent() {
               whileHover={{ 
                 y: -12, 
                 scale: 1.02,
-                transition: { duration: 0.3, type: "spring", stiffness: 300 }
+                transition: { duration: 0.15, type: "tween", ease: "easeOut" }
               }}
             >
               {/* Premium Border Glow Effect */}
@@ -947,7 +1074,7 @@ function ServicesPageContent() {
               >
                 {/* Phase Number Circle - Above Card */}
                 <motion.div 
-                  className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full border border-slate-600/50 bg-slate-900/60 backdrop-blur-lg flex items-center justify-center mb-6 group-hover:border-slate-500/70 transition-all duration-300"
+                  className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full border border-slate-600/50 bg-slate-900/60 backdrop-blur-lg flex items-center justify-center mb-6 group-hover:border-slate-500/70 transition-all duration-150"
                   whileHover={{ scale: 1.05 }}
                 >
                   {/* Glow effect */}
@@ -961,22 +1088,22 @@ function ServicesPageContent() {
 
                 {/* Glassmorphism Card */}
                 <motion.div 
-                  className="relative w-full h-full backdrop-blur-xl bg-slate-900/40 border border-slate-700/50 rounded-3xl p-8 overflow-hidden group-hover:bg-slate-800/50 group-hover:border-slate-600/70 transition-all duration-500"
+                  className="relative w-full h-full backdrop-blur-xl bg-slate-900/40 border border-slate-700/50 rounded-3xl p-8 overflow-hidden group-hover:bg-slate-800/50 group-hover:border-slate-600/70 transition-all duration-200"
                   whileHover={{ y: -12, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
                 >
                   {/* Glass overlay effects */}
                   <div className="absolute inset-0 bg-gradient-to-br from-slate-800/30 via-transparent to-slate-900/30 rounded-3xl" />
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-slate-600/10 to-transparent rounded-3xl" />
                   
                   {/* Premium glow border on hover */}
-                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-slate-500/20 via-transparent to-slate-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-slate-500/20 via-transparent to-slate-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                   
                   <div className="relative z-10">
                     {/* Phase Header */}
                     <div className="flex items-start gap-4 mb-6">
                       <motion.div 
-                        className="w-12 h-12 rounded-2xl bg-slate-800/60 border border-slate-600/50 backdrop-blur-sm flex items-center justify-center text-slate-300 group-hover:bg-slate-700/60 group-hover:border-slate-500/70 group-hover:text-white transition-all duration-300"
+                        className="w-12 h-12 rounded-2xl bg-slate-800/60 border border-slate-600/50 backdrop-blur-sm flex items-center justify-center text-slate-300 group-hover:bg-slate-700/60 group-hover:border-slate-500/70 group-hover:text-white transition-all duration-150"
                         whileHover={{ rotate: 5, scale: 1.1 }}
                       >
                         {step.icon}
@@ -1023,7 +1150,7 @@ function ServicesPageContent() {
                         {step.deliverables.map((deliverable, delIndex) => (
                           <div key={delIndex}>
                             <motion.div 
-                              className="relative px-4 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/50 backdrop-blur-sm text-slate-300 text-sm font-medium hover:bg-slate-700/60 hover:border-slate-600/70 hover:text-white transition-all duration-300 cursor-pointer"
+                              className="relative px-4 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/50 backdrop-blur-sm text-slate-300 text-sm font-medium hover:bg-slate-700/60 hover:border-slate-600/70 hover:text-white transition-all duration-150 cursor-pointer"
                               whileHover={{ scale: 1.02, x: 4 }}
                               whileTap={{ scale: 0.98 }}
                             >
@@ -1092,13 +1219,13 @@ function ServicesPageContent() {
                 className="group relative"
                 variants={fadeInUp}
                 whileHover={{ y: -12 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
               >
                 {/* Background gradient that appears on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 blur-xl"></div>
                 
                 {/* Main card */}
-                <div className="relative h-full bg-white/[0.02] backdrop-blur-sm border border-white/[0.05] rounded-2xl p-8 group-hover:border-white/[0.1] transition-all duration-500">
+                                  <div className="relative h-full bg-white/[0.02] backdrop-blur-sm border border-white/[0.05] rounded-2xl p-8 group-hover:border-white/[0.1] transition-all duration-200">
                   {/* Full border gradient accents */}
                   <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-t-2xl"></div>
                   <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-b-2xl"></div>
@@ -1107,8 +1234,8 @@ function ServicesPageContent() {
                   
                   {/* Icon container */}
                   <div className="mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 flex items-center justify-center group-hover:from-blue-900/30 group-hover:to-purple-900/30 group-hover:border-blue-500/30 transition-all duration-500">
-                      <div className="text-gray-400 group-hover:text-blue-400 transition-colors duration-500">
+                                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 flex items-center justify-center group-hover:from-blue-900/30 group-hover:to-purple-900/30 group-hover:border-blue-500/30 transition-all duration-200">
+                                              <div className="text-gray-400 group-hover:text-blue-400 transition-colors duration-200">
                         {reason.icon}
                       </div>
                     </div>
@@ -1116,16 +1243,16 @@ function ServicesPageContent() {
                   
                   {/* Content */}
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-blue-100 transition-colors duration-300">
+                    <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-blue-100 transition-colors duration-150">
                       {reason.title}
                     </h3>
-                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300 text-base">
+                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-150 text-base">
                       {reason.description}
                     </p>
                   </div>
                   
                   {/* Bottom accent line */}
-                  <div className="absolute bottom-0 left-0 w-0 h-px bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-700 ease-out"></div>
+                  <div className="absolute bottom-0 left-0 w-0 h-px bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300 ease-out"></div>
                 </div>
               </motion.div>
             ))}
